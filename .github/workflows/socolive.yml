@@ -1,0 +1,32 @@
+name: Socolive Scraper
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Runs every 6 hours to catch new match listings
+  workflow_dispatch: # Allows you to run it manually from the 'Actions' tab
+
+jobs:
+  scrape_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Scraper Requirements
+        run: pip install requests beautifulsoup4
+
+      - name: Execute Socolive Scraper
+        run: python socolive.py
+
+      - name: Update Repository
+        run: |
+          git config --global user.name "Socolive Bot"
+          git config --global user.email "bot@socolive.local"
+          git add socolive_links.txt
+          git commit -m "Update Socolive match links: $(date)" || exit 0
+          git push
