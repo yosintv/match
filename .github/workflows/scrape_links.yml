@@ -1,36 +1,35 @@
-name: Daily Match Scraper
+name: Match Link Scraper
 
 on:
   schedule:
-    # Runs at 15:00 UTC every day, which is 00:00 AM JST
-    - cron: '0 15 * * *'
-  workflow_dispatch: # Allows you to run it manually via the 'Actions' tab
+    - cron: '0 15 * * *' # Runs at 00:00 JST
+  workflow_dispatch:
 
 jobs:
-  build:
+  scrape:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write # Explicitly allows pushing the text file
+    
     steps:
-      - name: Checkout repository code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          pip install requests beautifulsoup4
+      - name: Install Dependencies
+        run: pip install requests beautifulsoup4
 
-      - name: Run the scraper script
+      - name: Run Scraper
         run: python scraper.py
 
-      - name: Commit and Push results
+      - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add links.txt
-          # Only commit if the file actually changed
-          git commit -m "Update matches for JST $(date)" || echo "No changes to commit"
+          git commit -m "Updated sub-links for $(date)" || echo "No changes to commit"
           git push
