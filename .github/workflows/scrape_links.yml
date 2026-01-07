@@ -2,14 +2,14 @@ name: Match Link Scraper
 
 on:
   schedule:
-    - cron: '0 15 * * *' # Runs at 00:00 JST
+    - cron: '0 15 * * *'
   workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Explicitly allows pushing the text file
+      contents: write
     
     steps:
       - name: Checkout
@@ -21,7 +21,9 @@ jobs:
           python-version: '3.10'
 
       - name: Install Dependencies
-        run: pip install requests beautifulsoup4
+        run: |
+          pip install playwright
+          playwright install chromium --with-deps
 
       - name: Run Scraper
         run: python scraper.py
@@ -31,5 +33,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add links.txt
-          git commit -m "Updated sub-links for $(date)" || echo "No changes to commit"
+          git commit -m "Updated sub-links via Playwright" || echo "No changes to commit"
           git push
