@@ -1,0 +1,66 @@
+name: Match Link Scraper
+
+on:
+  schedule:
+    - cron: '0 15 * * *' # Runs daily at 00:00 JST (which is 15:00 UTC previous day)
+  workflow_dispatch:      # Allows manual trigger
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run Scraper
+        env:
+          BASE_URL: "https://sakjhqs.tijing2.com:9967/matches?tab=202&status=upcoming&date="
+        run: |
+          python - <<EOF
+          import requests
+          import os
+          from bs4 import BeautifulSoup
+          from datetime import datetime, timezone, timedelta
+
+          # 1. Calculate JST Unix Timestamp for 00:00 AM
+          jst = timezone(timedelta(hours=9))
+          now_jst = datetime.now(jst).replace(hour=0, minute=0, second=0, microsecond=0)
+          timestamp = int(now_jst.timestamp())
+
+          # 2. Build URL and Fetch Content
+          target_url = f"{os.getenv('BASE_URL')}{timestamp}"
+          print(f"Scraping: {target_url}")
+          
+          response = requests.get(target_url)
+          soup = BeautifulSoup(response.text, 'html.parser')
+
+          # 3. Extract Links (Adjust 'a' tags or selectors based on site structure)
+          links = [a['href'] for a in soup.find_all('a', href=True)]
+          
+          # Filter for specific match links if needed
+          match_links = [l for l in links if "/match/" in l] 
+
+          # 4. Save to file
+          with open("links.txt", "w") as f:
+              for link in match_links:
+                  f.write(link + "\n")
+          EOF
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add links.txt
+          git commit -m "Update match links for $(date)" || echo "No changes to commit"
+          git push
