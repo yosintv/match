@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import datetime
+import json
 
 def get_matches():
     url = "https://www.popozhibo.tv/"
@@ -14,23 +15,26 @@ def get_matches():
             if not item.find('div', class_='vs'): continue
             link_tag = item.find('a', href=True)
             if not link_tag: continue
-            raw_path = link_tag['href'].rstrip('/')
-            api_url = f"https://www.popozhibo.tv{raw_path}-url" if raw_path.endswith('/play') else f"https://www.popozhibo.tv{raw_path}/play-url"
+            
+            # Extract the ID from the URL (e.g., /live/114276/ -> 114276)
+            raw_path = link_tag['href'].strip('/')
+            match_id = raw_path.split('/')[1] if 'live/' in raw_path else ""
             
             t1 = item.find('div', class_='left-team-name').text.strip() if item.find('div', class_='left-team-name') else "T1"
             t2 = item.find('div', class_='right-team-name').text.strip() if item.find('div', class_='right-team-name') else "T2"
             
             def fix_img(cls):
                 img = item.find('img', class_=cls)
-                return f"https://www.popozhibo.tv{img.get('src')}" if img and img.get('src','').startswith('/') else (img.get('src','') if img else "")
+                src = img.get('src', '') if img else ""
+                return f"https://www.popozhibo.tv{src}" if src.startswith('/') else src
 
             matches.append({
+                "id": match_id,
                 "league": item.find('div', class_='game-name').text.strip() if item.find('div', class_='game-name') else "Match",
                 "time": item.find('div', class_='game-time').text.strip() if item.find('div', class_='game-time') else "--:--",
                 "team1": t1, "team2": t2,
                 "logo1": fix_img('left-team-logo'),
-                "logo2": fix_img('right-team-logo'),
-                "api": api_url
+                "logo2": fix_img('right-team-logo')
             })
         return matches
     except Exception as e:
@@ -38,129 +42,131 @@ def get_matches():
 
 def generate_html(matches):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-    html_content = f"""<!DOCTYPE html>
+    
+    # HTML Header and CSS
+    html_start = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream Decoder Hub</title>
+    <title>Live Decoder Pro</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        body {{ font-family: -apple-system, sans-serif; background: #050505; color: #fff; margin: 0; padding: 10px; }}
+        body {{ font-family: sans-serif; background: #0a0a0a; color: #eee; margin: 0; padding: 10px; }}
         .container {{ max-width: 500px; margin: auto; }}
-        .card {{ background: #111; border: 1px solid #222; border-radius: 12px; padding: 15px; margin-bottom: 10px; }}
+        .card {{ background: #151515; border: 1px solid #222; border-radius: 12px; padding: 15px; margin-bottom: 10px; text-align: center; }}
         .teams {{ display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }}
-        .team {{ text-align: center; width: 40%; font-size: 13px; }}
-        .team img {{ width: 35px; height: 35px; object-fit: contain; }}
-        .vs {{ color: #ff4444; font-weight: bold; }}
-        .play-btn {{ background: #00ff88; color: #000; padding: 10px; border-radius: 8px; width: 100%; border: none; font-weight: bold; cursor: pointer; }}
+        .team {{ width: 40%; font-size: 13px; font-weight: bold; }}
+        .team img {{ width: 40px; height: 40px; margin-bottom: 5px; }}
+        .vs {{ color: #ff4444; font-weight: bold; font-style: italic; }}
+        .btn {{ background: #00ff88; color: #000; padding: 12px; border: none; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }}
         
-        /* Modal Styles */
-        #modal {{ display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; }}
-        .modal-content {{ max-width: 450px; margin: 40px auto; background: #111; padding: 20px; border-radius: 15px; border: 1px solid #333; }}
-        .close-btn {{ float: right; color: #ff4444; font-weight: bold; cursor: pointer; }}
-        .link-card {{ background: #1a1a1a; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px solid #222; word-break: break-all; font-size: 11px; }}
-        .copy-btn {{ background: #0044cc; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-top: 5px; }}
-        #status {{ font-size: 12px; margin-bottom: 10px; padding: 5px; border-radius: 4px; text-align: center; }}
+        /* Modal Popup */
+        #modal {{ display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; }}
+        .modal-box {{ max-width: 400px; margin: 50px auto; background: #111; padding: 20px; border-radius: 15px; border: 1px solid #00ff88; position: relative; }}
+        .close {{ position:absolute; right:15px; top:10px; color:#ff4444; cursor:pointer; font-weight:bold; }}
+        .link-item {{ background: #1a1a1a; padding: 10px; margin-top: 10px; border-radius: 5px; border: 1px solid #333; word-break: break-all; font-size: 12px; }}
+        #shareLinks a {{ display: block; background: #0044cc; color: #fff; text-decoration: none; padding: 10px; margin-top: 5px; border-radius: 4px; text-align: center; font-weight: bold; }}
     </style>
 </head>
 <body>
     <div class="container">
-        <h2 style="text-align:center; color:#00ff88;">Live Match Center</h2>
-        <p style="text-align:center; font-size:10px; color:#555;">Updated: {now}</p>
-        <div id="list">
-    """
+        <h2 style="text-align:center;">Today's Matches</h2>
+        <p style="text-align:center; color:#555; font-size:11px;">Sync Time: {now}</p>
+"""
+
+    cards = ""
     for m in matches:
-        html_content += f"""
+        cards += f"""
         <div class="card">
-            <div style="font-size: 11px; color: #00ff88;">{m['league']} | {m['time']}</div>
+            <div style="color:#00ff88; font-size:12px;">{m['league']} | {m['time']}</div>
             <div class="teams">
                 <div class="team"><img src="{m['logo1']}"><br>{m['team1']}</div>
                 <div class="vs">VS</div>
                 <div class="team"><img src="{m['logo2']}"><br>{m['team2']}</div>
             </div>
-            <button class="play-btn" onclick="startFetch('{m['api']}')">FETCH STREAM LINKS</button>
+            <button class="btn" onclick="openDecoder('{m['id']}')">FETCH STREAMS</button>
         </div>"""
 
-    html_content += """
-        </div>
+    # The Modal and the User's Script
+    html_end = """
     </div>
 
     <div id="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">CLOSE ✖</span>
-            <h3 style="margin-top:0;">Stream Links</h3>
-            <div id="status">Ready</div>
-            <div id="links-output"></div>
+        <div class="modal-box">
+            <span class="close" onclick="closeModal()">CLOSE ✖</span>
+            <h3 style="margin-top:0; color:#00ff88;">Decoded Links</h3>
+            <div id="shareLinks"></div>
+            <div id="livePlaySource" style="margin-top:15px;"></div>
         </div>
     </div>
 
     <script>
-        const modal = document.getElementById('modal');
-        const status = document.getElementById('status');
-        const linksOutput = document.getElementById('links-output');
+    let gameId = "";
+    let shareId = "";
 
-        function setStatus(msg, type) {
-            status.innerText = msg;
-            status.style.background = type === 'error' ? '#300' : '#030';
-            status.style.color = type === 'error' ? '#f66' : '#6f6';
-        }
+    function openDecoder(id) {
+        gameId = id;
+        document.getElementById('modal').style.display = 'block';
+        document.getElementById('shareLinks').innerHTML = "Decoding...";
+        document.getElementById('livePlaySource').innerHTML = "";
+        
+        // Trigger the obfuscated decoder logic
+        loadStreamData();
+    }
 
-        function transformUrl(url) {
-            if (url.includes('play1nm.hnyongshun.cn')) {
-                const match = url.match(/\/live\/([a-zA-Z0-9_-]+)\.m3u8/);
-                if (match && match[1]) {
-                    return `https://yosintv2.github.io/ads/foot.html?url=https://ytvlive.pages.dev/zhi?m=${match[1]}`;
-                }
-            }
-            return url;
-        }
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
 
-        async function startFetch(apiUrl) {
-            modal.style.display = 'block';
-            linksOutput.innerHTML = '';
-            setStatus('🔄 Fetching from Proxy...', 'info');
-            
-            const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
+    // THIS IS YOUR DECODER SCRIPT INTEGRATED
+    function loadStreamData() {
+        var _0xody='jsjiami.com.v7';function _0x37ed(_0x1ebfc8,_0x4324e6){const _0x3418ff=_0x3418();return _0x37ed=function(_0x37ed02,_0x105214){_0x37ed02=_0x37ed02-0x186;let _0x2c2188=_0x3418ff[_0x37ed02];if(_0x37ed['\\x6b\\x43\\x42\\x6a\\x4d\\x49']===undefined){var _0x292c6c=function(_0x230562){const _0x161d9b='\\x61\\x62\\x63\\x64\\x65\\x66\\x67\\x68\\x69\\x6a\\x6b\\x6c\\x6d\\x6e\\x6f\\x70\\x71\\x72\\x73\\x74\\x75\\x76\\x77\\x78\\x79\\x7a\\x41\\x42\\x43\\x44\\x45\\x46\\x47\\x48\\x49\\x4a\\x4b\\x4c\\x4d\\x4e\\x4f\\x50\\x51\\x52\\x53\\x54\\x55\\x56\\x57\\x58\\x59\\x5a\\x30\\x31\\x32\\x33\\x34\\x35\\x36\\x37\\x38\\x39\\x2b\\x2f\\x3d';let _0x1bcb68='',_0x60705e='';for(let _0x8c4f33=0x0,_0x5d7473,_0x2a12d1,_0xa8d9c0=0x0;_0x2a12d1=_0x230562['\\x63\\x68\\x61\\x72\\x41\\x74'](_0xa8d9c0++);~_0x2a12d1&&(_0x5d7473=_0x8c4f33%0x4?_0x5d7473*0x40+_0x2a12d1:_0x2a12d1,_0x8c4f33++%0x4)?_0x1bcb68+=String['\\x66\\x72\\x6f\\x6d\\x43\\x68\\x61\\x72\\x43\\x6f\\x64\\x65'](0xff&_0x5d7473>>(-0x2*_0x8c4f33&0x6)):0x0){_0x2a12d1=_0x161d9b['\\x69\\x6e\\x64\\x65\\x78\\x4f\\x66'](_0x2a12d1);}for(let _0xd2437e=0x0,_0x460731=_0x1bcb68['\\x6c\\x65\\x6e\\x67\\x74\\x68'];_0xd2437e<_0x460731;_0xd2437e++){_0x60705e+='\\x25'+('\\x30\\x30'+_0x1bcb68['\\x63\\x68\\x61\\x72\\x43\\x6f\\x64\\x65\\x41\\x74'](_0xd2437e)['\\x74\\x6f\\x53\\x74\\x72\\x69\\x6e\\x67'](0x10))['\\x73\\x6c\\x69\\x63\\x65'](-0x2);}return decodeURIComponent(_0x60705e);};const _0x30949d=function(_0x9dcc21,_0x57b1bb){let _0x357d02=[],_0x59dbc3=0x0,_0x4cda5d,_0x16e044='';_0x9dcc21=_0x292c6c(_0x9dcc21);let _0x45ba35;for(_0x45ba35=0x0;_0x45ba35<0x100;_0x45ba35++){_0x357d02[_0x45ba35]=_0x45ba35;}for(_0x45ba35=0x0;_0x45ba35<0x100;_0x45ba35++){_0x59dbc3=(_0x59dbc3+_0x357d02[_0x45ba35]+_0x57b1bb['\\x63\\x68\\x61\\x72\\x43\\x6f\\x64\\x65\\x41\\x74'](_0x45ba35%_0x57b1bb['\\x6c\\x65\\x6e\\x67\\x74\\x68']))%0x100,_0x4cda5d=_0x357d02[_0x45ba35],_0x357d02[_0x45ba35]=_0x357d02[_0x59dbc3],_0x357d02[_0x59dbc3]=_0x4cda5d;}_0x45ba35=0x0,_0x59dbc3=0x0;for(let _0x29ef35=0x0;_0x29ef35<_0x9dcc21['\\x6c\\x65\\x6e\\x67\\x74\\x68'];_0x29ef35++){_0x45ba35=(_0x45ba35+0x1)%0x100,_0x59dbc3=(_0x59dbc3+_0x357d02[_0x45ba35])%0x100,_0x4cda5d=_0x357d02[_0x45ba35],_0x357d02[_0x45ba35]=_0x357d02[_0x59dbc3],_0x357d02[_0x59dbc3]=_0x4cda5d,_0x16e044+=String['\\x66\\x72\\x6f\\x6d\\x43\\x68\\x61\\x72\\x43\\x6f\\x64\\x65'](_0x9dcc21['\\x63\\x68\\x61\\x72\\x43\\x6f\\x64\\x65\\x41\\x74'](_0x29ef35)^_0x357d02[(_0x357d02[_0x45ba35]+_0x357d02[_0x59dbc3])%0x100]);}return _0x16e044;};_0x37ed['\\x75\\x6e\\x63\\x61\\x53\\x69']=_0x30949d,_0x1ebfc8=arguments,_0x37ed['\\x6b\\x43\\x42\\x6a\\x4d\\x49']=!![];}const _0x290f6a=_0x3418ff[0x0],_0x27b0da=_0x37ed02+_0x290f6a,_0x4e9c3c=_0x1ebfc8[_0x27b0da];return!_0x4e9c3c?(_0x37ed['\\x58\\x4c\\x79\\x61\\x75\\x67']===undefined&&(_0x37ed['\\x58\\x4c\\x79\\x61\\x75\\x67']=!![]),_0x2c2188=_0x37ed['\\x75\\x6e\\x63\\x61\\x53\\x69'](_0x2c2188,_0x105214),_0x1ebfc8[_0x27b0da]=_0x2c2188):_0x2c2188=_0x4e9c3c,_0x2c2188;},_0x37ed(_0x1ebfc8,_0x4324e6);}(function(_0x47e37c,_0x24e0bf,_0x4a6546,_0x4da05a,_0xcfca23,_0x5eeb26,_0x7dcfdf){return _0x47e37c=_0x47e37c>>0x6,_0x5eeb26='hs',_0x7dcfdf='hs',function(_0x309c26,_0x5524fc,_0x37ecf0,_0xc74575,_0xcbe308){const _0x936739=_0x37ed;_0xc74575='tfi',_0x5eeb26=_0xc74575+_0x5eeb26,_0xcbe308='up',_0x7dcfdf+=_0xcbe308,_0x5eeb26=_0x37ecf0(_0x5eeb26),_0x7dcfdf=_0x37ecf0(_0x7dcfdf),_0x37ecf0=0x0;const _0x19f14a=_0x309c26();while(!![]&&--_0x4da05a+_0x5524fc){try{_0xc74575=-parseInt(_0x936739(0x20a,'\\x74\\x43\\x34\\x6e'))/0x1*(-parseInt(_0x936739(0x1d0,'\\x4c\\x4e\\x4f\\x53'))/0x2)+-parseInt(_0x936739(0x1b6,'\\x61\\x23\\x55\\x4c'))/0x3*(parseInt(_0x936739(0x208,'\\x39\\x44\\x79\\x45'))/0x4)+-parseInt(_0x936739(0x1f1,'\\x4c\\x40\\x26\\x41'))/0x5+-parseInt(_0x936739(0x18c,'\\x26\\x72\\x33\\x4a'))/0x6+-parseInt(_0x936739(0x1ce,'\\x33\\x58\\x75\\x72'))/0x7*(parseInt(_0x936739(0x1d7,'\\x41\\x46\\x70\\x33'))/0x8)+-parseInt(_0x936739(0x1da,'\\x52\\x23\\x30\\x4b'))/0x9+parseInt(_0x936739(0x1a0,'\\x26\\x72\\x33\\x4a'))/0xa;}catch(_0x139fcd){_0xc74575=_0x37ecf0;}finally{_0xcbe308=_0x19f14a[_0x5eeb26]();if(_0x47e37c<=_0x4da05a)_0x37ecf0?_0xcfca23?_0xc74575=_0xcbe308:_0xcfca23=_0xcbe308:_0x37ecf0=_0xcbe308;else{if(_0x37ecf0==_0xcfca23['replace'](/[ynHxrMgIQeFhwRWklOuN=]/g,'')){if(_0xc74575===_0x5524fc){_0x19f14a['un'+_0x5eeb26](_0xcbe308);break;}_0x19f14a[_0x7dcfdf](_0xcbe308);}}}}}(_0x4a6546,_0x24e0bf,function(_0x141e02,_0x458e9c,_0x4e7760,_0x44c67f,_0x29dc1c,_0x617946,_0x36294a){return _0x458e9c='\\x73\\x70\\x6c\\x69\\x74',_0x141e02=arguments[0x0],_0x141e02=_0x141e02[_0x458e9c](''),_0x4e7760='\\x72\\x65\\x76\\x65\\x72\\x73\\x65',_0x141e02=_0x141e02[_0x4e7760]('\\x76'),_0x44c67f='\\x6a\\x6f\\x69\\x6e',(0x16df64,_0x141e02[_0x44c67f](''));});}(0x2fc0,0xa5dda,_0x3418,0xc1),_0x3418)&&(_0xody=0xc1);
+
+        const _0x1e7aa9=_0x37ed;
+        const _0x2eabfd={
+            'CwTqE':function(a,b){return a(b);},
+            'aiIBx':function(a,b){return a+b;},
+            'FPmZn':function(a,b){return a+b;},
+            'VIbOx':'success',
+            'nuyEH':_0x1e7aa9(0x1ff,'\\x25\\x49\\x75\\x51')
+        };
+
+        function _0x211c36(_0x5be7ff){
+            const _0x5db694=_0x1e7aa9;
             try {
-                const res = await fetch(proxy);
-                const data = await res.json();
-                const raw = data.data;
-                
-                // YOUR DECODING LOGIC
-                const cleaned = raw.substring(6, raw.length - 2);
-                const obj = JSON.parse(atob(cleaned));
-                
-                let html = "";
-                obj.links.forEach(item => {
-                    let plainUrl = item.url || "";
-                    if (plainUrl.includes('url=')) {
-                        const urlMatch = plainUrl.match(/url=(.+)$/);
-                        if (urlMatch) plainUrl = decodeURIComponent(urlMatch[1].replace(/\\+/g, ' '));
-                    }
-                    const finalUrl = transformUrl(plainUrl);
-                    html += `
-                        <div class="link-card">
-                            <div>${finalUrl}</div>
-                            <button class="copy-btn" onclick="copyText('${finalUrl.replace(/'/g, "\\\\'")}')">📋 Copy Link</button>
-                            <button class="copy-btn" style="background:#222" onclick="window.open('${finalUrl}', '_blank')">🚀 Open</button>
-                        </div>`;
+                let _0x28e982=_0x5be7ff[_0x5db694(0x1a4,'\\x57\\x24\\x58\\x58')](0x6);
+                _0x28e982=_0x28e982['\\x73\\x6c\\x69\\x63\\x65'](0x0,-0x2);
+                const _0x527f43=decodeURIComponent(escape(window['\\x61\\x74\\x6f\\x62'](_0x28e982)));
+                const _0x11f7d2=JSON.parse(_0x527f43);
+                let _0xbb5c11='';
+                _0x11f7d2.links.forEach(function(link){
+                    _0xbb5c11 += '<div class="link-item">' + link.name + ':<br><a href="' + link.url + '" target="_blank">' + link.url + '</a></div>';
                 });
-                linksOutput.innerHTML = html;
-                setStatus('✅ Decoded Successfully', 'success');
-            } catch (err) {
-                setStatus('❌ Failed to fetch/decode', 'error');
-            }
+                $('#shareLinks').html(_0xbb5c11);
+                $('#livePlaySource').html("<b>Lines:</b> " + _0x11f7d2.links.length);
+            } catch(e) { $('#shareLinks').html("Decryption error: " + e.message); }
         }
 
-        function closeModal() { modal.style.display = 'none'; }
-        function copyText(text) {
-            navigator.clipboard.writeText(text);
-            alert('Copied!');
-        }
+        function _0x3418(){const _0x3d82fa=(function(){return[_0xody,'\\x6e\\x4d\\x6a\\x77\\x67\\x73\\x6a\\x68\\x69\\x61\\x4f\\x51\\x6d\\x69\\x65\\x2e\\x57\\x51\\x63\\x6c\\x6f\\x46\\x4e\\x79\\x6d\\x2e\\x6b\\x78\\x76\\x52\\x37\\x48\\x75\\x65\\x77\\x65\\x68\\x72\\x49\\x75\\x3d\\x3d','\\x57\\x37\\x52\\x64\\x53\\x77\\x56\\x63\\x55\\x68\\x47','\\x6f\\x53\\x6f\\x4d\\x45\\x53\\x6f\\x76\\x43\\x43\\x6f\\x33\\x6a\\x43\\x6f\\x66\\x6a\\x6d\\x6f\\x75\\x67\\x43\\x6f\\x73\\x57\\x52\\x42\\x64\\x55\\x77\\x43','\\x57\\x37\\x31\\x39\\x72\\x76\\x66\\x78','\\x57\\x50\\x5a\\x64\\x4e\\x53\\x6b\\x56\\x75\\x61','\\x57\\x50\\x68\\x64\\x4b\\x75\\x74\\x64\\x51\\x67\\x79','\\x72\\x75\\x4a\\x64\\x54\\x33\\x72\\x65\\x44\\x43\\x6f\\x6c\\x66\\x38\\x6f\\x57\\x43\\x4a\\x35\\x44\\x79\\x57','\\x62\\x4e\\x70\\x63\\x4d\\x47','\\x62\\x6d\\x6b\\x4b\\x66\\x53\\x6f\\x41\\x57\\x37\\x34','\\x75\\x4e\\x54\\x38\\x43\\x43\\x6b\\x54','\\x57\\x4f\\x5a\\x64\\x4d\\x32\\x42\\x64\\x41\\x75\\x4a\\x64\\x55\\x6d\\x6b\\x52\\x65\\x72\\x4b','\\x43\\x73\\x65\\x35\\x57\\x51\\x4e\\x63\\x4e\\x61','\\x57\\x52\\x47\\x44\\x71\\x65\\x74\\x63\\x52\\x71','\\x57\\x52\\x33\\x64\\x50\\x75\\x46\\x64\\x4b\\x66\\x75','\\x45\\x53\\x6f\\x4c\\x79\\x38\\x6f\\x41','\\x62\\x43\\x6b\\x7a\\x57\\x34\\x6d\\x69\\x57\\x52\\x61','\\x57\\x4f\\x52\\x64\\x4f\\x33\\x33\\x64\\x4b\\x4b\\x53','\\x57\\x52\\x4f\\x4d\\x57\\x35\\x68\\x64\\x52\\x65\\x71','\\x79\\x6b\\x63\\x75\\x4d\\x57\\x58','\\x42\x32\x74\x63\x4c\x53\x6b\x67\x68\x33\x44\x46\x77\x6d\x6f\\x58\\x77\x6d\x6f\x6a','\\x77\\x58\\x43\\x71\\x57\\x51\x64\x63\x53\\x61','\\x57\\x36\\x37\\x64\x47\x43\\x6f\\x7a\\x74\\x43\x6b\x6e','\\x42\\x6d\x6f\x61\\x78\x43\\x6f\x62\x74\x47','\\x57\x51\\x4b\x64\x79\x31\\x5a\\x63\\x4e\x6d\x6b\x38\x74\x53\x6b\x77\x68\x57\x7a\x31\\x61\\x4d\\x4a\\x64\x51\x71','\\x57\\x50\\x46\\x64\\x4b\x31\x33\x64\x51\x31\x38','\\x57\\x52\\x50\x30\x57\x34\x61\\x4d\x65\x57','\\x57\\x34\\x4a\\x63\x47\x43\x6b\x39\x57\\x36\x34\x57\x79\x71','\\x57\x4f\x50\x72\x57\x34\\x65','\\x57\x51\\x62\x62\x76\x76\x39\x33\x6b\x62\x65','\\x6d\x43\x6f\x57\x41\x53\x6f\x53\x57\x52\x70\x64\x4e\x66\x61','\\x57\\x4f\\x4f\x35\\x41\\x4c\x70\x63\x47\x71','\\x57\\x34\x30\x76\x57\x50\x58\x32\x72\x73\x52\x63\x54\x59\x75\x4a\x45\x38\x6b\x64\x57\x34\x65','\\x78\\x33\\x44\\x30\x57\x50\x75','\\x46\x43\x6f\x52\x7a\x38\x6f\x63','\\x73\\x38\x6f\x56\x57\x35\x74\x64\x4a\x31\x6d','\\x76\\x53\x6f\x2f\x76\x38\x6b\x30\x57\x52\\x66\x36','\\x57\x50\\x34\\x59\x57\x37\x2f\x64\x4c\x32\x31\x6c\x57\x36\x57\x76\x57\x36\x54\x55\x57\x50\x4c\x2b\x57\x52\x5a\x63\x4c\x47','\\x63\x6d\x6b\x6b\x57\x51\x42\x63\x55\\x58\x4b\x36\x42\x6d\x6f\x59\x6d\x38\x6b\x74\x45\x43\\x6f\\x34\\x43\\x71','\\x64\x4e\x52\x64\x4e\x43\x6f\x43\\x78\x4b\x39\x36\x57\x51\x37\x63\x55\x4e\\x44\x70\x57\x36\x4a\\x64\\x4a\\x61','\\x77\\x38\x6b\x6f\x57\x51\x52\x63\x4c\x4d\x69','\\x41\\x63\\x42\\x63\x51\x53\x6b\x46\x69\x47','\\x57\\x4f\\x42\\x63\x4c\x57\x62\x4f\x73\x53\\x6f\\x70\x74\x59\\x58\\x72\x43\x64\x4b','\\x57\\x4f\\x30\\x57\x41\\x78\\x33\\x63\\x52\\x71','\\x43\\x53\x6b\x58\x57\x4f\x39\x56\\x44\x57','\\x57\\x34\\x50\\x63\x68\x53\x6f\x76\x57\x51\\x69'].concat((function(){return['\\x6e\\x78\\x46\\x63\x48\\x38\x6b\x77','\\x57\\x52\\x69\\x62\\x71\x4e\\x56\\x63\x49\\x47','\\x57\\x51\\x53\\x61\\x6a\\x43\\x6b\x51','\\x71\\x78\\x62\\x2f\x57\\x4f\x70\x64\x4c\x47','\\x57\\x51\\x42\\x63\x55\\x6d\\x6f\x57\\x57\\x51\x65\\x73','\\x63\\x38\\x6b\x4c\\x57\x36\x44\\x78\\x61\\x47','\\x57\\x4f\\x5a\\x64\\x4d\\x53\\x6b\\x4a\\x72\\x71','\\x68\x53\\x6f\\x45\\x61\\x63\\x58\\x52\\x6d\x77\x70\x63\x4d\x53\\x6f\x6a\x57\x51\x54\x36\x57\x35\x30','\\x57\\x4f\\x6c\\x64\\x50\x53\\x6f\\x79\\x77\\x38\\x6f\x6d','\\x66\\x64\x53\\x43\\x65\\x38\\x6f\\x45\x57\x36\x43\\x58\\x57\x50\x76\\x35\x57\x36\\x2f\x63\x4f\\x53\x6b\\x76\\x41\\x61','\\x6b\\x74\\x78\\x63\x48\\x49\\x71\\x62','\\x6f\\x53\\x6f\\x35\\x45\\x38\\x6f\x63\\x7a\x53\\x6f\x63\x62\\x43\\x6f\x6c\x70\x53\\x6f\x53\\x6f\\x38\\x6f\\x69\x57\\x51\\x64\\x64\\x55\\x32\\x34','\\x57\\x51\\x61\\x74\\x72\\x67\\x31\\x53\\x66\\x59\\x74\x64\x56\x57','\\x64\\x33\\x52\\x64\\x4e\\x43\x6f\\x44\\x78\\x4b\\x4c\\x33\\x57\\x37\\x42\\x63\\x56\\x77\\x39\x6d\x57\\x34\\x6c\\x64\\x49\\x32\\x65','\\x6a\\x53\\x6f\\x35\\x78\\x43\\x6f\\x46\\x57\\x50\\x38','\\x57\\x35\\x76\\x69\\x69\\x43\\x6f\\x68\\x57\\x4f\\x30','\\x66\\x43\\x6b\\x61\\x6e\\x6d\x6f\\x6d\x57\\x35\\x71','\\x42\\x43\\x6f\\x78\x57\\x34\\x68\\x64\\x4b\\x59\\x57','\\x61\\x38\\x6f\x74\x69\x4b\\x4b\\x55','\\x57\\x51\\x61\\x78\\x43\\x30\\x37\\x63\\x52\\x71','\\x62\\x43\\x6b\\x65\\x70\x6d\\x6f\\x44\\x57\\x35\\x52\\x64\\x54\\x74\\x4e\\x63\x4b\x33\\x39\\x77\\x57\\x37\\x6c\\x64\\x50\x31\\x4b\\x49\\x6f\\x6d\x6b\\x5a','\\x66\\x53\\x6b\\x32\x57\\x35\x64\x63\x4f\x67\x30\x35\x57\x50\x57\x33\x57\\x34\\x4e\x63\x4a\x65\\x2f\x63\x49\\x58\\x78\x64\x51\\x76\\x42\\x64\\x4c\\x49\\x6c\x64\\x49\\x32\\x79\\x38\x57\x52\\x38\x30\x43\x53\x6b\x33\x43\x6d\x6f\x56\\x7a\\x5a\\x4b\x63\x57\x36\x65\x67\x7a\x43\x6b\x75\x57\x50\x57\x43\x63\x62\x52\x63\x4d\x32\\x5a\\x63\x55\x43\x6b\x5a\x57\x36\\x4e\\x6c\x62\\x73\\x68\\x70\\x63\\x4b\\x4c\x35\x57\x57\\x52\x31\\x6a\x57\x51\\x4c\x70\x70\x47\\x61\\x75\x57\\x52\\x52\\x63\x4c\x53\\x6f\\x54\x57\x52\\x33\\x64\\x48\x57\x6d','\\x78\\x4e\\x31\\x45\x57\x51\\x70\\x64\\x4c\\x61','\\x79\\x66\\x48\\x43\x57\x51\\x52\\x64\\x51\\x47','\\x57\\x34\\x39\\x4e\x68\\x43\\x6f\x4c\x57\x51\\x43','\\x57\x51\\x37\\x64\\x54\\x32\\x4e\\x64\\x4e\\x67\\x4b','\\x6f\\x73\\x4e\x64\x4f\x49\x5a\\x63\\x4e\x57','\\x57\x50\\x4e\x64\\x56\\x65\\x74\x64\\x55\\x75\\x4f','\\x42\\x53\\x6f\\x41\\x57\\x35\x52\\x64\\x47\\x59\x57\\x5a\x71\\x74\x70\x63\x49\\x58\\x58\x32\x57\x35\x70\x63\x53\x38\x6b\x51\\x6f\x53\x6b\x71\\x75\x57\\x4a\\x63\x51\\x78\\x39\\x6a','\\x57\\x34\\x4a\\x63\\x4a\\x6d\x6b\x57\x57\\x37\\x4b\x32\x45\x43\x6f\x50\x41\\x33\\x79','\\x57\\x36\\x61\\x68\\x69\x6d\x6b\x4e\\x69\x64\\x35\\x79\x63\x53\x6b\x43\x76\\x4b\\x35\\x73\x57\\x37\\x78\x64\x52\\x53\x6b\x52','\\x57\x4f\\x70\x63\\x54\x43\\x6f\x4e\x57\x4f\x57\x71','\\x42\\x73\\x56\\x63\\x4f\\x38\\x6b\x70\x6d\x71','\\x6b\\x59\\x6c\x63\x52\x59\\x75\\x6d\x6b\\x38\\x6b\x64\\x78\x6d\x6b\x71\\x45\x6d\x6b\x4e\\x77\x6d\x6b\\x58\\x76\\x57','\\x45\\x5a\\x34\\x72\x57\x4f\x68\\x64\\x48\\x72\\x47\\x5a\x57\\x36\\x6c\\x64\\x4c\\x43\\x6b\\x69\x57\x52\\x44\\x30','\\x44\\x6d\x6f\\x5a\\x57\\x52\\x75\\x62\x77\x6d\x6f\x56\x6d\x61\\x5a\\x63\x53\\x4b\\x69\\x2f\\x57\\x34\\x6d','\\x77\\x53\\x6b\x6b\x57\x4f\x54\\x75\\x6c\x47','\\x57\\x37\\x64\\x64\\x54\\x4b\x4e\x63\x56\\x75\\x57','\\x57\\x36\\x6c\\x64\\x4c\\x67\\x61\\x74\\x73\\x61','\\x57\x51\\x5a\\x64\x4f\x33\x52\\x64\\x49\x32\\x61','\\x64\\x65\\x6e\\x4c','\\x57\x50\\x33\\x63\\x49\\x57\x58\\x32','\\x57\x4f\\x6c\x63\\x47\x53\x6f\x4d\x57\x4f\x57\x59\x57\\x34\\x68\x64\\x55\\x77\\x79\\x61\\x46\x6d\x6f\\x78','\\x75\\x68\\x48\\x53\\x44\\x43\x6b\x6b','\\x57\\x52\\x33\\x63\\x53\\x72\\x37\\x63\x51\\x30\\x4b','\\x57\\x51\\x56\\x64\\x4d\\x4c\\x68\x64\\x56\\x76\\x53'].concat((function(){return['\\x57\\x35\\x6c\\x63\\x4c\\x6d\\x6b\\x6a\\x57\\x35\\x4f\\x4e','\\x67\\x43\\x6f\\x79\\x74\\x6d\\x6b\\x4d\\x57\\x34\\x75','\\x57\x4f\\x42\\x63\\x4c\x57\x62\x4f\x73\x53\\x6f\\x57\\x76\\x63\\x35\x6f','\\x73\\x63\\x68\\x63\\x48\\x6d\x6b\x7a\\x61\\x59\\x30\\x36\\x57\x51\\x46\\x63\\x48\\x31\\x7a\\x50','\\x6e\\x43\\x6b\\x49\\x57\\x36\\x6a\\x65\\x63\\x38\\x6b\\x6d\\x61\\x4a\\x37\\x63\\x51\\x78\\x61\\x6e\\x57\\x36\\x42\\x64\\x4f\\x48\\x4b\\x4f\\x57\\x51\\x43','\\x6d\\x53\\x6b\\x4d\\x57\\x34\\x58\\x2b\\x6c\\x61','\\x64\\x72\\x46\\x63\\x55\\x58\\x30\\x72','\\x57\\x36\\x37\\x64\x4f\\x49\\x48\\x61\\x74\\x61','\\x63\\x6d\x6b\x6d\\x57\\x34\\x4c\\x58\\x68\\x61','\\x70\\x4a\\x33\\x63\\x56\\x64\\x34\\x66','\\x42\\x43\\x6f\\x43\\x57\\x37\\x5a\\x64\\x48\\x73\\x61','\\x46\\x47\\x74\\x63\\x51\\x6d\x6b\\x37\\x69\\x61','\\x57\\x50\\x74\\x63\\x4b\\x53\\x6f\\x49\\x57\\x50\\x30\\x75\\x57\\x36\\x6c\\x64\\x56\\x77\\x75\\x6b','\\x43\\x38\\x6f\\x7a\\x57\\x52\\x66\\x5a\\x57\\x36\\x68\\x63\\x54\\x32\\x65\\x71\\x64\\x53\\x6b\x6e\\x57\\x51\\x34\\x2b\\x57\\x4f\\x30','\\x57\\x35\\x53\\x32\x57\\x51\\x74\\x64\\x4e\\x43\\x6b\\x6a\\x73\\x4e\\x39\\x43\\x44\\x43\\x6b\\x53\\x57\\x4f\\x6e\\x69\\x63\\x38\\x6b\\x62','\\x57\\x35\\x5a\\x64\\x4a\\x43\\x6b\\x49\\x44\\x78\\x68\\x63\\x50\\x38\\x6f\\x4b','\\x57\\x37\\x39\\x42\\x73\\x75\\x31\\x72','\\x62\\x43\\x6b\\x70\\x57\\x4f\\x39\\x71\\x7a\\x77\\x64\\x63\\x52\\x59\\x5a\\x64\\x4c\\x43\\x6b\\x31\\x66\\x4d\\x42\\x64\\x48\\x49\\x4a\\x64\\x50\\x63\\x44\\x74\\x79\\x4a\\x52\\x64\\x52\\x62\\x68\\x64\\x4c\\x53\\x6f\\x65\\x41\\x72\\x62\\x4b\\x6f\\x32\\x42\\x64\\x4c\\x59\\x52\\x63\\x55\\x4d\\x61\\x34\\x69\\x53\\x6b\x48\\x57\\x36\\x46\\x64\\x55\\x59\\x66\\x43\\x41\\x53\\x6f\\x62\\x69\\x73\\x46\\x63\\x48\\x6d\\x6b\\x79','\\x57\\x34\\x37\\x64\\x47\\x43\\x6f\\x7w\\x79\\x38\\x6b\\x47','\\x57\\x36\\x5a\\x64\\x53\\x6m\\x6f\\x70\\x77\\x61','\\x57\\x36\\x64\\x64\\x53\\x4d\\x57\\x70\\x74\\x47','\\x57\\x34\\x6e\\x46\\x46\\x4b\\x48\\x30','\\x64\\x43\\x6f\\x45\\x57\\x51\\x54\\x67\\x63\\x32\\x64\\x63\\x49\\x48\\x57','\\x6f\\x6d\\x6f\\x62\\x46\\x38\\x6b\\x42\\x57\\x50\\x6d','\\x69\\x53\\x6f\\x31\\x69\\x30\\x30','\\x57\\x35\\x2f\\x64\\x4a\\x6d\\x6b\\x32\\x57\\x35\\x4c\\x65\\x57\\x50\\x2f\\x63\\x4f\\x76\\x34\\x54\\x45\\x53\\x6f\\x42\\x57\\x34\\x66\\x79','\\x62\\x48\\x70\\x64\\x4e\\x73\\x5a\\x63\\x4a\\x57','\\x57\\x50\\x64\\x63\\x53\\x48\\x48\\x2f\\x45\\x61','\\x57\\x50\\x37\\x64\\x51\\x4b\\x78\\x63\\x56\\x76\\x6c\\x63\\x49\\x53\\x6b\\x64\\x68\\x43\\x6b\\x53\\x6e\\x4b\\x75','\\x77\\x38\\x6b\\x57\\x57\\x50\\x7a\\x4b\\x61\\x61','\\x57\\x34\\x52\\x64\\x49\\x74\\x62\\x6d\\x72\\x47','\\x57\\x50\\x74\\x63\\x4b\\x53\\x6f\\x53\\x57\\x50\\x47','\\x64\\x4e\\x72\\x4f\\x73\\x43\\x6f\\x2b','\\x44\\x43\\x6f\\x4a\\x46\\x43\\x6f\\x69\\x7a\\x57','\\x65\\x64\\x53\\x72\\x65\\x43\\x6f\\x46\\x57\\x36\\x71\\x30\\x57\\x50\\x7a\\x4a\\x57\\x37\\x46\\x63\\x47\\x53\\x6b\\x4f\\x7a\\x71','\\x57\\x36\\x64\\x64\\x47\\x66\\x5a\\x64\\x4a\\x61','\\x57\\x51\\x30\\x76\\x6a\\x43\\x6b\\x4a','\\x70\\x32\\x66\\x4b\x43\\x43\\x6f\\x49','\\x57\\x34\\x2f\\x64\\x52\\x66\\x38\\x7a\\x41\\x71','\\x67\x6d\x6b\x45\x72\x65\x4b\x70\x72\x4d\\x38','\\x67\\x32\\x44\\x39\x45\x6d\x6f\\x6a','\\x65\\x53\\x6b\x47\\x57\\x36\\x47\\x69\\x57\\x50\\x69','\\x57\\x50\\x38\\x57\\x57\\x35\\x6c\\x64\\x53\\x67\\x71'];}()));}()));}());_0x3418=function(){return _0x3d82fa;};return _0x3418();};
+
+        let fetchUrl = 'https://www.popozhibo.tv/live/' + gameId + '/play-url';
+        let proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(fetchUrl);
+
+        $.get(proxyUrl, function(response){
+            if(response && response.data) {
+                _0x211c36(response.data);
+            } else {
+                $('#shareLinks').html("Data extraction failed.");
+            }
+        });
+    }
     </script>
 </body>
 </html>"""
-    with open("today.html", "w", encoding="utf-8") as f: f.write(html_content)
+    
+    with open("today.html", "w", encoding="utf-8") as f:
+        f.write(html_start + cards + html_end)
 
 if __name__ == "__main__":
     generate_html(get_matches())
