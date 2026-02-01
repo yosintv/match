@@ -18,7 +18,7 @@ def get_matches():
             link_tag = item.find('a', href=True)
             if not link_tag: continue
             
-            # Build the /play-url correctly
+            # Correctly format the play-url
             raw_path = link_tag['href'].rstrip('/')
             if raw_path.endswith('/play'):
                 api_url = f"https://www.popozhibo.tv{raw_path}-url"
@@ -55,24 +55,24 @@ def generate_html(matches):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
-    <title>Stream Decoder</title>
+    <title>Stream Center</title>
     <style>
         body {{ font-family: sans-serif; background: #000; color: #fff; text-align: center; margin: 0; padding: 10px; }}
         .list {{ max-width: 500px; margin: auto; }}
         .card {{ background: #111; border: 1px solid #222; border-radius: 12px; padding: 15px; margin-bottom: 10px; }}
         .teams {{ display: flex; align-items: center; justify-content: space-between; margin: 10px 0; }}
         .team img {{ width: 35px; height: 35px; object-fit: contain; }}
-        .team span {{ font-size: 13px; display: block; margin-top: 5px; }}
         .vs {{ color: #ff4444; font-weight: bold; }}
         .play-btn {{ 
-            background: #00ff88; color: #000; padding: 8px 15px; border-radius: 6px; 
-            display: inline-block; cursor: pointer; font-weight: bold; font-size: 12px; border: none; width: 100%;
+            background: #00ff88; color: #000; padding: 10px; border-radius: 6px; 
+            cursor: pointer; font-weight: bold; width: 100%; border: none;
         }}
+        .play-btn:disabled {{ background: #555; cursor: not-allowed; }}
     </style>
 </head>
 <body>
     <h2>Live Match Center</h2>
-    <p style="color: #555; font-size: 11px;">Last Sync: {now}</p>
+    <p style="color: #555; font-size: 11px;">Synced: {now}</p>
     <div class="list">"""
 
     cards = ""
@@ -81,35 +81,45 @@ def generate_html(matches):
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">{m['league']} | {m['time']}</div>
             <div class="teams">
-                <div class="team"><img src="{m['logo1']}"><span>{m['team1']}</span></div>
+                <div class="team"><img src="{m['logo1']}"><br><span>{m['team1']}</span></div>
                 <div class="vs">VS</div>
-                <div class="team"><img src="{m['logo2']}"><span>{m['team2']}</span></div>
+                <div class="team"><img src="{m['logo2']}"><br><span>{m['team2']}</span></div>
             </div>
-            <button class="play-btn" onclick="openStream('{m['api']}')">DECODE & PLAY</button>
+            <button class="play-btn" onclick="decodeAndPlay(this, '{m['api']}')">PLAY STREAM</button>
         </div>"""
 
     html_end = """
     </div>
     <script>
-        async function openStream(apiUrl) {
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "Decoding...";
+        async function decodeAndPlay(btn, apiUrl) {
+            btn.disabled = true;
+            btn.innerText = "Bypassing Security...";
+            
+            // Using a CORS proxy to bypass the browser block
+            const proxy = "https://api.allorigins.win/get?url=";
             
             try {
-                const response = await fetch(apiUrl);
-                const json = await response.json();
-                let b64 = json.data.slice(0, -2); // Remove the 2-char suffix
+                const res = await fetch(proxy + encodeURIComponent(apiUrl));
+                const data = await res.json();
                 
-                // Decode Base64
+                // AllOrigins returns the result inside a 'contents' string
+                const jsonPayload = JSON.parse(data.contents);
+                const encodedData = jsonPayload.data;
+                
+                // Remove the 2-character suffix (e.g., 'Gg', 'zy')
+                let b64 = encodedData.slice(0, -2);
+                
+                // Standard Base64 Decode
                 let decoded = JSON.parse(atob(b64));
                 let streamUrl = decoded.links[0].url;
                 
-                window.open(streamUrl, '_blank');
+                window.location.href = streamUrl;
             } catch (err) {
-                alert("Decryption failed. The stream might be offline or blocked.");
+                console.error(err);
+                alert("Decryption failed. Try again in a few seconds.");
             } finally {
-                btn.innerText = originalText;
+                btn.disabled = false;
+                btn.innerText = "PLAY STREAM";
             }
         }
     </script>
