@@ -1,107 +1,129 @@
 import requests
 from bs4 import BeautifulSoup
 import datetime
+import base64
+import json
+
+def get_plain_stream_url(api_url):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Referer": "https://www.popozhibo.tv/"
+    }
+    try:
+        response = requests.get(api_url, headers=headers, timeout=10)
+        if response.status_code != 200: return "#"
+        
+        # Extract the "data" field from the JSON
+        payload = response.json().get('data', '')
+        if not payload: return "#"
+
+        # Step 1: Remove the 2-character suffix (like 'zy' or 'Gg')
+        clean_b64 = payload[:-2] 
+        
+        # Step 2: Fix padding for Base64
+        missing_padding = len(clean_b64) % 4
+        if missing_padding:
+            clean_b64 += '=' * (4 - missing_padding)
+            
+        # Step 3: Decode Base64 and parse JSON
+        decoded_str = base64.b64decode(clean_b64).decode('utf-8')
+        data_obj = json.loads(decoded_str)
+        
+        # Step 4: Get the first URL from the links list
+        return data_obj['links'][0]['url']
+    except Exception as e:
+        print(f"Failed to decode {api_url}: {e}")
+        return "#"
 
 def get_matches():
     url = "https://www.popozhibo.tv/"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    }
+    headers = {"User-Agent": "Mozilla/5.0"}
     
     try:
-        response = requests.get(url, headers=headers)
-        response.encoding = 'utf-8'
-        soup = BeautifulSoup(response.text, 'html.parser')
+        res = requests.get(url, headers=headers)
+        res.encoding = 'utf-8'
+        soup = BeautifulSoup(res.text, 'html.parser')
         matches = []
-        items = soup.find_all('li')
-
-        for item in items:
+        
+        for item in soup.find_all('li'):
             if not item.find('div', class_='vs'): continue
             
-            # 1. Extract Info
-            t1_name = item.find('div', class_='left-team-name').get_text(strip=True) if item.find('div', class_='left-team-name') else ""
-            t2_name = item.find('div', class_='right-team-name').get_text(strip=True) if item.find('div', class_='right-team-name') else ""
-            time = item.find('div', class_='game-time').get_text(strip=True) if item.find('div', class_='game-time') else ""
-            league = item.find('div', class_='game-name').get_text(strip=True) if item.find('div', class_='game-name') else ""
-
-            # 2. Build the exact "play-url" link
+            # Identify the match link
             link_tag = item.find('a', href=True)
-            if link_tag and '/live/' in link_tag['href']:
-                # Example: /live/114276 -> https://www.popozhibo.tv/live/114276/play-url
-                match_id_path = link_tag['href'].rstrip('/')
-                final_json_url = f"https://www.popozhibo.tv{match_id_path}/play-url"
+            if not link_tag: continue
+            
+            # Fix URL logic: ensure it ends in /play-url without doubling up
+            raw_path = link_tag['href'].rstrip('/')
+            if raw_path.endswith('/play'):
+                api_url = f"https://www.popozhibo.tv{raw_path}-url"
             else:
-                continue
+                api_url = f"https://www.popozhibo.tv{raw_path}/play-url"
 
-            # 3. Get Logos
+            # Fetch and decode to get the plain URL
+            print(f"Decoding link for match: {api_url}")
+            plain_url = get_plain_stream_url(api_url)
+
+            # Metadata
+            t1 = item.find('div', class_='left-team-name').text.strip() if item.find('div', class_='left-team-name') else "T1"
+            t2 = item.find('div', class_='right-team-name').text.strip() if item.find('div', class_='right-team-name') else "T2"
+            
             def fix_img(cls):
-                tag = item.find('img', class_=cls)
-                if not tag or not tag.get('src'): return ""
-                src = tag.get('src')
+                img = item.find('img', class_=cls)
+                if not img: return ""
+                src = img.get('src', '')
                 return f"https://www.popozhibo.tv{src}" if src.startswith('/') else src
 
             matches.append({
-                "time": time,
-                "league": league,
-                "team1": t1_name,
-                "team2": t2_name,
+                "league": item.find('div', class_='game-name').text.strip() if item.find('div', class_='game-name') else "",
+                "time": item.find('div', class_='game-time').text.strip() if item.find('div', class_='game-time') else "",
+                "team1": t1, "team2": t2,
                 "logo1": fix_img('left-team-logo'),
                 "logo2": fix_img('right-team-logo'),
-                "link": final_json_url
+                "link": plain_url
             })
         return matches
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Scraper error: {e}")
         return []
 
 def generate_html(matches):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-    html_template = f"""<!DOCTYPE html>
-<html lang="zh-CN">
+    html = f"""<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Link Center</title>
+    <meta name="referrer" content="no-referrer">
+    <title>Live Stream Decoder</title>
     <style>
-        body {{ font-family: sans-serif; background: #0a0a0a; color: #fff; padding: 20px; }}
-        .container {{ max-width: 600px; margin: auto; }}
-        .match-card {{ 
-            background: #1a1a1a; border: 1px solid #333; border-radius: 8px; 
-            padding: 15px; margin-bottom: 12px; display: block; 
-            text-decoration: none; color: inherit; transition: 0.2s;
-        }}
-        .match-card:hover {{ border-color: #00ff88; background: #222; }}
-        .meta {{ font-size: 12px; color: #888; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }}
-        .teams {{ display: flex; justify-content: space-between; align-items: center; }}
-        .team {{ text-align: center; width: 40%; }}
-        .team img {{ width: 40px; height: 40px; object-fit: contain; }}
-        .vs {{ font-weight: bold; color: #ff4444; }}
-        .json-label {{ 
-            display: inline-block; background: #00ff88; color: #000; 
-            font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-top: 10px;
-        }}
+        body {{ font-family: sans-serif; background: #000; color: #fff; text-align: center; }}
+        .list {{ max-width: 500px; margin: auto; padding: 10px; }}
+        .card {{ background: #111; border: 1px solid #222; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: block; text-decoration: none; color: inherit; }}
+        .teams {{ display: flex; align-items: center; justify-content: space-between; }}
+        .team img {{ width: 35px; height: 35px; }}
+        .vs {{ color: #ff4444; font-weight: bold; }}
+        .play-btn {{ background: #00ff88; color: #000; padding: 5px 10px; border-radius: 5px; display: inline-block; margin-top: 10px; font-weight: bold; font-size: 12px; }}
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 style="text-align:center;">Today's JSON Stream Links</h2>
-        <p style="text-align:center; font-size:11px; color:#666;">Last Sync: {now}</p>
+    <h2>Live Streams (Plain URLs)</h2>
+    <p style="color: #666; font-size: 10px;">Updated: {now}</p>
+    <div class="list">
     """
     for m in matches:
-        html_template += f"""
-        <a href="{m['link']}" class="match-card" target="_blank">
-            <div class="meta"><b>{m['league']}</b> | {m['time']}</div>
+        if m['link'] == "#": continue
+        html += f"""
+        <a href="{m['link']}" class="card" target="_blank">
+            <div style="font-size: 11px; color: #00ff88; margin-bottom: 5px;">{m['league']} | {m['time']}</div>
             <div class="teams">
                 <div class="team"><img src="{m['logo1']}"><br>{m['team1']}</div>
                 <div class="vs">VS</div>
                 <div class="team"><img src="{m['logo2']}"><br>{m['team2']}</div>
             </div>
-            <div class="json-label">CLICK FOR RAW JSON</div>
+            <div class="play-btn">OPEN PLAIN URL</div>
         </a>"""
-    
-    html_template += "</div></body></html>"
-    with open("today.html", "w", encoding="utf-8") as f:
-        f.write(html_template)
+    html += "</div></body></html>"
+    with open("today.html", "w", encoding="utf-8") as f: f.write(html)
 
 if __name__ == "__main__":
     generate_html(get_matches())
