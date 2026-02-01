@@ -1,26 +1,26 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Today's Matches</title>
-        <style>
-            body { font-family: sans-serif; background: #f4f4f4; text-align: center; }
-            .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
-            .match { display: flex; align-items: center; justify-content: space-between; 
-                      padding: 15px; border-bottom: 1px solid #eee; }
-            .team-img { width: 40px; height: 40px; object-fit: contain; }
-            .match-info { flex-grow: 1; font-weight: bold; font-size: 1.1em; }
-            .update-time { color: #888; font-size: 0.8em; margin-bottom: 20px; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Live Matches</h1>
-            <p class="update-time">Last Updated: 2026-02-01 13:47</p>
-            <div id="list">
-    
-            </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Today's Matches</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: white; text-align: center; padding: 20px; }
+        .container { max-width: 700px; margin: auto; background: #2d2d2d; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .match { display: flex; align-items: center; justify-content: space-between; 
+                  padding: 15px; border-bottom: 1px solid #444; transition: background 0.3s; }
+        .match:hover { background: #3d3d3d; }
+        .team-img { width: 50px; height: 50px; object-fit: contain; background: #eee; border-radius: 50%; padding: 5px; }
+        .match-info { flex-grow: 1; font-weight: bold; font-size: 1.1em; padding: 0 15px; }
+        .update-time { color: #aaa; font-size: 0.8em; margin-bottom: 20px; }
+        h1 { color: #00ff88; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Live Matches List</h1>
+        <p class="update-time">Last Updated: 2026-02-01 13:50</p>
+        <div id="list">
+    <p>No matches found right now. Check back later!</p>
         </div>
-    </body>
-    </html>
-    
+    </div>
+</body>
+</html>
