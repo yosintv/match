@@ -3,1049 +3,1050 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Today's Match Schedule</title>
+    <title>Live Sports Today</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f0f0f; color: #fff; margin: 0; padding: 20px; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #121212; color: #fff; margin: 0; padding: 15px; }
         .container { max-width: 600px; margin: auto; }
-        h1 { text-align: center; color: #00ff88; margin-bottom: 5px; }
-        .update-tag { text-align: center; color: #777; font-size: 12px; margin-bottom: 25px; }
+        h1 { text-align: center; color: #00ff88; font-size: 24px; }
+        .update-time { text-align: center; color: #666; font-size: 11px; margin-bottom: 20px; }
         .match-card { 
-            background: #1a1a1a; border-radius: 10px; padding: 15px; 
-            margin-bottom: 12px; display: flex; align-items: center;
-            border-left: 4px solid #00ff88; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            background: #1e1e1e; border-radius: 8px; padding: 12px; 
+            margin-bottom: 10px; display: flex; align-items: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
-        .meta-info { width: 80px; font-size: 12px; border-right: 1px solid #333; padding-right: 10px; }
-        .league-name { color: #00ff88; display: block; font-weight: bold; }
-        .match-box { flex: 1; display: flex; align-items: center; justify-content: space-evenly; padding-left: 10px; }
-        .team { text-align: center; width: 40%; }
-        .team img { width: 35px; height: 35px; object-fit: contain; display: block; margin: 0 auto 5px; }
-        .team span { font-size: 14px; font-weight: 500; }
-        .vs-text { font-weight: bold; color: #ff3e3e; font-size: 14px; }
+        .info { width: 70px; border-right: 1px solid #333; margin-right: 10px; font-size: 12px; }
+        .league { color: #00ff88; font-weight: bold; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .teams { flex: 1; display: flex; align-items: center; justify-content: space-evenly; }
+        .team { width: 42%; text-align: center; }
+        /* Specific sizing for the logos */
+        .team-logo-min { width: 35px; height: 35px; object-fit: contain; margin-bottom: 4px; }
+        .team-name { font-size: 13px; display: block; }
+        .vs { font-weight: bold; color: #ff4444; font-size: 14px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Live Matches</h1>
-        <p class="update-tag">Updated: 2026-02-01 13:54</p>
+        <h1>Today's Schedule</h1>
+        <p class="update-time">Synced: 2026-02-01 13:57</p>
         <div id="list">
     
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">篮球江西省城市篮球联赛</span>
+                <div class="info">
+                    <span class="league">篮球江西省城市篮球联赛</span>
                     <span>02-01 19:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>赣BA常规赛第六轮：萍乡</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">赣BA常规赛第六轮：萍乡</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>南昌</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">南昌</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">意甲</span>
+                <div class="info">
+                    <span class="league">意甲</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>都灵</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">都灵</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>莱切</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">莱切</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>河南女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">河南女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>厦门女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">厦门女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>大连女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">大连女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>福建女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">福建女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>江西女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">江西女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>合肥女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">合肥女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>山西女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">山西女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>石家女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">石家女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>浙江女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">浙江女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>武汉女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">武汉女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>北京女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">北京女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>江苏女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">江苏女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>东莞女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">东莞女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>陕西女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">陕西女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>山东女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">山东女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>四川女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">四川女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>辽宁女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">辽宁女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>福建女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">福建女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 19:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>河南女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">河南女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>福建女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">福建女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
+                <div class="info">
+                    <span class="league">CBA</span>
                     <span>02-01 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>四川丰谷</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">四川丰谷</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>新疆伊力特</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">新疆伊力特</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
+                <div class="info">
+                    <span class="league">CBA</span>
                     <span>02-01 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>上海久事</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">上海久事</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>南京头排苏酒</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">南京头排苏酒</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
+                <div class="info">
+                    <span class="league">CBA</span>
                     <span>02-01 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>江苏肯帝亚</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">江苏肯帝亚</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>深圳马可波罗</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">深圳马可波罗</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
+                <div class="info">
+                    <span class="league">CBA</span>
                     <span>02-01 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>福建晋江</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">福建晋江</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>北京控股</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">北京控股</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
+                <div class="info">
+                    <span class="league">CBA</span>
                     <span>02-01 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>宁波町渥</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">宁波町渥</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>广东东阳光</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">广东东阳光</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA常规赛</span>
+                <div class="info">
+                    <span class="league">CBA常规赛</span>
                     <span>02-01 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>北京北汽</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">北京北汽</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>青岛国信</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">青岛国信</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
+                <div class="info">
+                    <span class="league">CBA</span>
                     <span>02-01 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>上海久事</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">上海久事</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>同曦</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">同曦</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">WCBA</span>
+                <div class="info">
+                    <span class="league">WCBA</span>
                     <span>02-01 20:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>新疆女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">新疆女篮</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>上海女篮</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">上海女篮</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">西甲第22轮</span>
+                <div class="info">
+                    <span class="league">西甲第22轮</span>
                     <span>02-01 21:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>皇马</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">皇马</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>巴列卡诺</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">巴列卡诺</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">法甲第20轮</span>
+                <div class="info">
+                    <span class="league">法甲</span>
                     <span>02-01 22:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>里昂</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">里昂</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>里尔</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">里尔</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">英超</span>
+                <div class="info">
+                    <span class="league">英超</span>
                     <span>02-01 22:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>阿斯顿维拉</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">阿斯顿维拉</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>布伦特福德</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">布伦特福德</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">英超</span>
+                <div class="info">
+                    <span class="league">英超</span>
                     <span>02-01 22:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>曼联</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">曼联</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>富勒姆</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">富勒姆</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">英超</span>
+                <div class="info">
+                    <span class="league">英超</span>
                     <span>02-01 22:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>诺丁汉森林</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">诺丁汉森林</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>水晶宫</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">水晶宫</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">意甲</span>
+                <div class="info">
+                    <span class="league">意甲</span>
                     <span>02-01 22:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>科莫</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">科莫</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>亚特兰大</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">亚特兰大</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">德甲第20轮</span>
+                <div class="info">
+                    <span class="league">德甲第20轮</span>
                     <span>02-01 22:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>斯图加特</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">斯图加特</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>弗赖堡</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">弗赖堡</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">西甲</span>
+                <div class="info">
+                    <span class="league">西甲</span>
                     <span>02-01 23:15</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>皇家贝蒂斯</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">皇家贝蒂斯</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>瓦伦西亚</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">瓦伦西亚</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">法甲</span>
+                <div class="info">
+                    <span class="league">法甲</span>
                     <span>02-02 00:15</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>昂热</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">昂热</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>梅斯</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">梅斯</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">法甲</span>
+                <div class="info">
+                    <span class="league">法甲</span>
                     <span>02-02 00:15</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>尼斯</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">尼斯</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>布雷斯特</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">布雷斯特</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">法甲</span>
+                <div class="info">
+                    <span class="league">法甲</span>
                     <span>02-02 00:15</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>图卢兹</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">图卢兹</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>欧塞尔</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">欧塞尔</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">英超</span>
+                <div class="info">
+                    <span class="league">英超</span>
                     <span>02-02 00:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>热刺</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">热刺</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>曼城</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">曼城</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">德甲</span>
+                <div class="info">
+                    <span class="league">德甲</span>
                     <span>02-02 00:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>多特蒙德</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">多特蒙德</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>海登海姆</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">海登海姆</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">意甲</span>
+                <div class="info">
+                    <span class="league">意甲</span>
                     <span>02-02 01:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>克雷莫纳</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">克雷莫纳</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>国际米兰</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">国际米兰</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">西甲</span>
+                <div class="info">
+                    <span class="league">西甲</span>
                     <span>02-02 01:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>赫塔菲</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">赫塔菲</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>塞尔塔</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">塞尔塔</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">法甲</span>
+                <div class="info">
+                    <span class="league">法甲</span>
                     <span>02-02 03:45</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>斯特拉斯堡</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">斯特拉斯堡</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>巴黎圣日耳曼</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">巴黎圣日耳曼</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">意甲</span>
+                <div class="info">
+                    <span class="league">意甲</span>
                     <span>02-02 03:45</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>帕尔马</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">帕尔马</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>尤文图斯</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">尤文图斯</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">西甲</span>
+                <div class="info">
+                    <span class="league">西甲</span>
                     <span>02-02 04:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>毕尔巴鄂竞技</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">毕尔巴鄂竞技</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>皇家社会</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">皇家社会</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-02 04:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>凯尔特人</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">凯尔特人</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>雄鹿</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">雄鹿</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-02 05:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>马刺</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">马刺</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>魔术</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">魔术</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-02 07:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>猛龙</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">猛龙</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>爵士</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">爵士</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-02 07:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>活塞</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">活塞</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>篮网</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">篮网</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-02 07:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>奇才</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">奇才</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>国王</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">国王</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-02 07:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>热火</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">热火</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>公牛</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">公牛</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-02 08:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>尼克斯</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">尼克斯</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>湖人</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">湖人</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-02 09:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>太阳</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">太阳</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>快船</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">快船</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-02 10:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>开拓者</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">开拓者</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>骑士</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">骑士</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-02 10:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>掘金</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">掘金</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>雷霆</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">雷霆</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
+                <div class="info">
+                    <span class="league">CBA</span>
                     <span>02-02 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>天津先行者</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">天津先行者</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>山东高速</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">山东高速</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
+                <div class="info">
+                    <span class="league">CBA</span>
                     <span>02-02 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>吉林九台</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">吉林九台</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>浙江方兴渡</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">浙江方兴渡</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">意甲</span>
+                <div class="info">
+                    <span class="league">意甲</span>
                     <span>02-03 03:45</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>乌迪内斯</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">乌迪内斯</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>罗马</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">罗马</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">英超</span>
+                <div class="info">
+                    <span class="league">英超</span>
                     <span>02-03 04:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>桑德兰</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">桑德兰</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>伯恩利</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">伯恩利</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">西甲</span>
+                <div class="info">
+                    <span class="league">西甲</span>
                     <span>02-03 04:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>马洛卡</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">马洛卡</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>塞维利亚</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">塞维利亚</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-03 08:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>黄蜂</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">黄蜂</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>鹈鹕</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">鹈鹕</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-03 08:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>步行者</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">步行者</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>火箭</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">火箭</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-03 08:30</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>灰熊</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">灰熊</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>森林狼</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">森林狼</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">NBA</span>
+                <div class="info">
+                    <span class="league">NBA</span>
                     <span>02-03 11:00</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>快船</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">快船</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>76人</span>
-                    </div>
-                </div>
-            </div>
-            <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
-                    <span>02-03 19:35</span>
-                </div>
-                <div class="match-box">
-                    <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>广东东阳光</span>
-                    </div>
-                    <div class="vs-text">VS</div>
-                    <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>上海久事</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">76人</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
+                <div class="info">
+                    <span class="league">CBA</span>
                     <span>02-03 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>四川丰谷</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">广东东阳光</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>山西汾酒</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">上海久事</span>
                     </div>
                 </div>
             </div>
             <div class="match-card">
-                <div class="meta-info">
-                    <span class="league-name">CBA</span>
+                <div class="info">
+                    <span class="league">CBA</span>
                     <span>02-03 19:35</span>
                 </div>
-                <div class="match-box">
+                <div class="teams">
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>青岛国信</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">四川丰谷</span>
                     </div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs">VS</div>
                     <div class="team">
-                        <img src="" onerror="this.src='https://via.placeholder.com/35?text=?'">
-                        <span>广州朗肽</span>
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">山西汾酒</span>
+                    </div>
+                </div>
+            </div>
+            <div class="match-card">
+                <div class="info">
+                    <span class="league">CBA</span>
+                    <span>02-03 19:35</span>
+                </div>
+                <div class="teams">
+                    <div class="team">
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">青岛国信</span>
+                    </div>
+                    <div class="vs">VS</div>
+                    <div class="team">
+                        <img class="team-logo-min" src="" referrerPolicy="no-referrer" onerror="this.src='https://via.placeholder.com/35?text=?'">
+                        <span class="team-name">广州朗肽</span>
                     </div>
                 </div>
             </div>
