@@ -3,274 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
-    <title>Stream Center</title>
+    <title>Stream Decoder Hub</title>
     <style>
-        body { font-family: sans-serif; background: #000; color: #fff; text-align: center; margin: 0; padding: 10px; }
-        .list { max-width: 500px; margin: auto; }
+        body { font-family: -apple-system, sans-serif; background: #050505; color: #fff; margin: 0; padding: 10px; }
+        .container { max-width: 500px; margin: auto; }
         .card { background: #111; border: 1px solid #222; border-radius: 12px; padding: 15px; margin-bottom: 10px; }
-        .teams { display: flex; align-items: center; justify-content: space-between; margin: 10px 0; }
+        .teams { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
+        .team { text-align: center; width: 40%; font-size: 13px; }
         .team img { width: 35px; height: 35px; object-fit: contain; }
         .vs { color: #ff4444; font-weight: bold; }
-        .play-btn { 
-            background: #00ff88; color: #000; padding: 10px; border-radius: 6px; 
-            cursor: pointer; font-weight: bold; width: 100%; border: none;
-        }
-        .play-btn:disabled { background: #555; cursor: not-allowed; }
+        .play-btn { background: #00ff88; color: #000; padding: 10px; border-radius: 8px; width: 100%; border: none; font-weight: bold; cursor: pointer; }
+        
+        /* Modal Styles */
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; }
+        .modal-content { max-width: 450px; margin: 40px auto; background: #111; padding: 20px; border-radius: 15px; border: 1px solid #333; }
+        .close-btn { float: right; color: #ff4444; font-weight: bold; cursor: pointer; }
+        .link-card { background: #1a1a1a; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px solid #222; word-break: break-all; font-size: 11px; }
+        .copy-btn { background: #0044cc; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-top: 5px; }
+        #status { font-size: 12px; margin-bottom: 10px; padding: 5px; border-radius: 4px; text-align: center; }
     </style>
 </head>
 <body>
-    <h2>Live Match Center</h2>
-    <p style="color: #555; font-size: 11px;">Synced: 2026-02-01 14:43</p>
-    <div class="list">
+    <div class="container">
+        <h2 style="text-align:center; color:#00ff88;">Live Match Center</h2>
+        <p style="text-align:center; font-size:10px; color:#555;">Updated: 2026-02-01 14:48</p>
+        <div id="list">
+    
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">WCBA | 02-01 19:30</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>江西女篮</span></div>
+                <div class="team"><img src=""><br>江西女篮</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>合肥女篮</span></div>
+                <div class="team"><img src=""><br>合肥女篮</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114811/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114811/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">WCBA | 02-01 19:30</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>山西女篮</span></div>
+                <div class="team"><img src=""><br>山西女篮</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>石家女篮</span></div>
+                <div class="team"><img src=""><br>石家女篮</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114812/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114812/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">WCBA | 02-01 19:30</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>浙江女篮</span></div>
+                <div class="team"><img src=""><br>浙江女篮</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>武汉女篮</span></div>
+                <div class="team"><img src=""><br>武汉女篮</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114813/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114813/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">WCBA | 02-01 19:30</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>北京女篮</span></div>
+                <div class="team"><img src=""><br>北京女篮</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>江苏女篮</span></div>
+                <div class="team"><img src=""><br>江苏女篮</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114814/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114814/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">WCBA | 02-01 19:30</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>东莞女篮</span></div>
+                <div class="team"><img src=""><br>东莞女篮</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>陕西女篮</span></div>
+                <div class="team"><img src=""><br>陕西女篮</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114815/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114815/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">WCBA | 02-01 19:30</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>山东女篮</span></div>
+                <div class="team"><img src=""><br>山东女篮</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>四川女篮</span></div>
+                <div class="team"><img src=""><br>四川女篮</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114816/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114816/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">WCBA | 02-01 19:30</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>辽宁女篮</span></div>
+                <div class="team"><img src=""><br>辽宁女篮</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>福建女篮</span></div>
+                <div class="team"><img src=""><br>福建女篮</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114849/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114849/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">WCBA | 02-01 19:30</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>河南女篮</span></div>
+                <div class="team"><img src=""><br>河南女篮</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>福建女篮</span></div>
+                <div class="team"><img src=""><br>福建女篮</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114850/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114850/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">CBA | 02-01 19:35</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>四川丰谷</span></div>
+                <div class="team"><img src=""><br>四川丰谷</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>新疆伊力特</span></div>
+                <div class="team"><img src=""><br>新疆伊力特</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114706/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114706/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">CBA | 02-01 19:35</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>上海久事</span></div>
+                <div class="team"><img src=""><br>上海久事</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>南京头排苏酒</span></div>
+                <div class="team"><img src=""><br>南京头排苏酒</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114707/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114707/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">CBA | 02-01 19:35</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>江苏肯帝亚</span></div>
+                <div class="team"><img src=""><br>江苏肯帝亚</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>深圳马可波罗</span></div>
+                <div class="team"><img src=""><br>深圳马可波罗</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114708/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114708/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">CBA | 02-01 19:35</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>福建晋江</span></div>
+                <div class="team"><img src=""><br>福建晋江</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>北京控股</span></div>
+                <div class="team"><img src=""><br>北京控股</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114709/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114709/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">CBA | 02-01 19:35</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>宁波町渥</span></div>
+                <div class="team"><img src=""><br>宁波町渥</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>广东东阳光</span></div>
+                <div class="team"><img src=""><br>广东东阳光</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114710/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114710/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">CBA常规赛 | 02-01 19:35</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>北京北汽</span></div>
+                <div class="team"><img src=""><br>北京北汽</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>青岛国信</span></div>
+                <div class="team"><img src=""><br>青岛国信</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114711/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114711/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">CBA | 02-01 19:35</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>上海久事</span></div>
+                <div class="team"><img src=""><br>上海久事</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>同曦</span></div>
+                <div class="team"><img src=""><br>同曦</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114848/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114848/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">WCBA | 02-01 20:00</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>新疆女篮</span></div>
+                <div class="team"><img src=""><br>新疆女篮</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>上海女篮</span></div>
+                <div class="team"><img src=""><br>上海女篮</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114817/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114817/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">西甲第22轮 | 02-01 21:00</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>皇马</span></div>
+                <div class="team"><img src=""><br>皇马</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>巴列卡诺</span></div>
+                <div class="team"><img src=""><br>巴列卡诺</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114203/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114203/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">法甲 | 02-01 22:00</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>里昂</span></div>
+                <div class="team"><img src=""><br>里昂</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>里尔</span></div>
+                <div class="team"><img src=""><br>里尔</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/113037/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/113037/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">英超 | 02-01 22:00</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>阿斯顿维拉</span></div>
+                <div class="team"><img src=""><br>阿斯顿维拉</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>布伦特福德</span></div>
+                <div class="team"><img src=""><br>布伦特福德</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/113949/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/113949/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">英超 | 02-01 22:00</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>曼联</span></div>
+                <div class="team"><img src=""><br>曼联</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>富勒姆</span></div>
+                <div class="team"><img src=""><br>富勒姆</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/113950/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/113950/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">英超 | 02-01 22:00</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>诺丁汉森林</span></div>
+                <div class="team"><img src=""><br>诺丁汉森林</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>水晶宫</span></div>
+                <div class="team"><img src=""><br>水晶宫</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/113951/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/113951/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">意甲 | 02-01 22:00</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>科莫</span></div>
+                <div class="team"><img src=""><br>科莫</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>亚特兰大</span></div>
+                <div class="team"><img src=""><br>亚特兰大</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114277/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114277/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">德甲 | 02-01 22:30</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>斯图加特</span></div>
+                <div class="team"><img src=""><br>斯图加特</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>弗赖堡</span></div>
+                <div class="team"><img src=""><br>弗赖堡</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114304/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114304/play-url')">FETCH STREAM LINKS</button>
         </div>
         <div class="card">
             <div style="font-size: 11px; color: #00ff88;">西甲 | 02-01 23:15</div>
             <div class="teams">
-                <div class="team"><img src=""><br><span>皇家贝蒂斯</span></div>
+                <div class="team"><img src=""><br>皇家贝蒂斯</div>
                 <div class="vs">VS</div>
-                <div class="team"><img src=""><br><span>瓦伦西亚</span></div>
+                <div class="team"><img src=""><br>瓦伦西亚</div>
             </div>
-            <button class="play-btn" onclick="decodeAndPlay(this, 'https://www.popozhibo.tv/live/114204/play-url')">PLAY STREAM</button>
+            <button class="play-btn" onclick="startFetch('https://www.popozhibo.tv/live/114204/play-url')">FETCH STREAM LINKS</button>
+        </div>
         </div>
     </div>
+
+    <div id="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">CLOSE ✖</span>
+            <h3 style="margin-top:0;">Stream Links</h3>
+            <div id="status">Ready</div>
+            <div id="links-output"></div>
+        </div>
+    </div>
+
     <script>
-        async function decodeAndPlay(btn, apiUrl) {
-            btn.disabled = true;
-            btn.innerText = "Bypassing Security...";
-            
-            // Using a CORS proxy to bypass the browser block
-            const proxy = "https://api.allorigins.win/get?url=";
-            
-            try {
-                const res = await fetch(proxy + encodeURIComponent(apiUrl));
-                const data = await res.json();
-                
-                // AllOrigins returns the result inside a 'contents' string
-                const jsonPayload = JSON.parse(data.contents);
-                const encodedData = jsonPayload.data;
-                
-                // Remove the 2-character suffix (e.g., 'Gg', 'zy')
-                let b64 = encodedData.slice(0, -2);
-                
-                // Standard Base64 Decode
-                let decoded = JSON.parse(atob(b64));
-                let streamUrl = decoded.links[0].url;
-                
-                window.location.href = streamUrl;
-            } catch (err) {
-                console.error(err);
-                alert("Decryption failed. Try again in a few seconds.");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "PLAY STREAM";
+        const modal = document.getElementById('modal');
+        const status = document.getElementById('status');
+        const linksOutput = document.getElementById('links-output');
+
+        function setStatus(msg, type) {
+            status.innerText = msg;
+            status.style.background = type === 'error' ? '#300' : '#030';
+            status.style.color = type === 'error' ? '#f66' : '#6f6';
+        }
+
+        function transformUrl(url) {
+            if (url.includes('play1nm.hnyongshun.cn')) {
+                const match = url.match(/\/live\/([a-zA-Z0-9_-]+)\.m3u8/);
+                if (match && match[1]) {
+                    return `https://yosintv2.github.io/ads/foot.html?url=https://ytvlive.pages.dev/zhi?m=${match[1]}`;
+                }
             }
+            return url;
+        }
+
+        async function startFetch(apiUrl) {
+            modal.style.display = 'block';
+            linksOutput.innerHTML = '';
+            setStatus('🔄 Fetching from Proxy...', 'info');
+            
+            const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
+            try {
+                const res = await fetch(proxy);
+                const data = await res.json();
+                const raw = data.data;
+                
+                // YOUR DECODING LOGIC
+                const cleaned = raw.substring(6, raw.length - 2);
+                const obj = JSON.parse(atob(cleaned));
+                
+                let html = "";
+                obj.links.forEach(item => {
+                    let plainUrl = item.url || "";
+                    if (plainUrl.includes('url=')) {
+                        const urlMatch = plainUrl.match(/url=(.+)$/);
+                        if (urlMatch) plainUrl = decodeURIComponent(urlMatch[1].replace(/\+/g, ' '));
+                    }
+                    const finalUrl = transformUrl(plainUrl);
+                    html += `
+                        <div class="link-card">
+                            <div>${finalUrl}</div>
+                            <button class="copy-btn" onclick="copyText('${finalUrl.replace(/'/g, "\\'")}')">📋 Copy Link</button>
+                            <button class="copy-btn" style="background:#222" onclick="window.open('${finalUrl}', '_blank')">🚀 Open</button>
+                        </div>`;
+                });
+                linksOutput.innerHTML = html;
+                setStatus('✅ Decoded Successfully', 'success');
+            } catch (err) {
+                setStatus('❌ Failed to fetch/decode', 'error');
+            }
+        }
+
+        function closeModal() { modal.style.display = 'none'; }
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            alert('Copied!');
         }
     </script>
 </body>
