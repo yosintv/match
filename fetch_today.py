@@ -14,89 +14,96 @@ def get_matches():
         soup = BeautifulSoup(response.text, 'html.parser')
         matches = []
 
-        # Target the <li> tags that contain the match info
+        # Target all <li> tags
         items = soup.find_all('li')
 
         for item in items:
-            # Check if this <li> actually contains a match by looking for the "vs" div
+            # Only process if it has the 'vs' element
             if not item.find('div', class_='vs'):
                 continue
             
-            # Extract Data
+            # Extract Data using the classes from your view-source
             time = item.find('div', class_='game-time').get_text(strip=True) if item.find('div', class_='game-time') else ""
             league = item.find('div', class_='game-name').get_text(strip=True) if item.find('div', class_='game-name') else ""
             
-            team_left = item.find('div', class_='left-team-name').get_text(strip=True) if item.find('div', class_='left-team-name') else "Team 1"
-            team_right = item.find('div', class_='right-team-name').get_text(strip=True) if item.find('div', class_='right-team-name') else "Team 2"
+            t1_name = item.find('div', class_='left-team-name').get_text(strip=True) if item.find('div', class_='left-team-name') else "Team 1"
+            t2_name = item.find('div', class_='right-team-name').get_text(strip=True) if item.find('div', class_='right-team-name') else "Team 2"
             
-            logo_left = item.find('img', class_='left-team-logo')
-            logo_right = item.find('img', class_='right-team-logo')
+            t1_logo = item.find('img', class_='left-team-logo')
+            t2_logo = item.find('img', class_='right-team-logo')
             
-            src_left = logo_left.get('src') if logo_left else ""
-            src_right = logo_right.get('src') if logo_right else ""
+            src1 = t1_logo.get('src') if t1_logo else ""
+            src2 = t2_logo.get('src') if t2_logo else ""
 
             matches.append({
                 "time": time,
                 "league": league,
-                "team1": team_left,
-                "team2": team_right,
-                "logo1": src_left,
-                "logo2": src_right
+                "team1": t1_name,
+                "team2": t2_name,
+                "logo1": src1,
+                "logo2": src2
             })
                 
         return matches
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error fetching data: {e}")
         return []
 
 def generate_html(matches):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     
+    # Note: Double curly braces {{ }} are used below to escape them in the f-string
     html_template = f"""<!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Today's Matches</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today's Match Schedule</title>
     <style>
-        body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121212; color: #e0e0e0; margin: 0; padding: 20px; }}
-        .container {{ max-width: 800px; margin: auto; }}
-        h1 {{ text-align: center; color: #00e676; }}
-        .update-time {{ text-align: center; color: #999; font-size: 0.8em; margin-bottom: 30px; }}
-        .match-card {{ background: #1e1e1e; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }}
-        .time-box {{ width: 100px; text-align: left; border-right: 1px solid #333; margin-right: 15px; }}
-        .league {{ font-size: 0.75em; color: #00e676; display: block; }}
-        .time {{ font-weight: bold; font-size: 0.9em; }}
-        .teams-container {{ flex-grow: 1; display: flex; align-items: center; justify-content: space-around; }}
-        .team {{ width: 40%; display: flex; flex-direction: column; align-items: center; text-align: center; }}
-        .team img {{ width: 45px; height: 45px; object-fit: contain; margin-bottom: 5px; }}
-        .vs {{ font-weight: bold; color: #ff5252; font-style: italic; }}
+        body {{ font-family: 'Segoe UI', Arial, sans-serif; background: #0f0f0f; color: #fff; margin: 0; padding: 20px; }}
+        .container {{ max-width: 600px; margin: auto; }}
+        h1 {{ text-align: center; color: #00ff88; margin-bottom: 5px; }}
+        .update-tag {{ text-align: center; color: #777; font-size: 12px; margin-bottom: 25px; }}
+        .match-card {{ 
+            background: #1a1a1a; border-radius: 10px; padding: 15px; 
+            margin-bottom: 12px; display: flex; align-items: center;
+            border-left: 4px solid #00ff88; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }}
+        .meta-info {{ width: 80px; font-size: 12px; border-right: 1px solid #333; padding-right: 10px; }}
+        .league-name {{ color: #00ff88; display: block; font-weight: bold; }}
+        .match-box {{ flex: 1; display: flex; align-items: center; justify-content: space-evenly; padding-left: 10px; }}
+        .team {{ text-align: center; width: 40%; }}
+        .team img {{ width: 35px; height: 35px; object-fit: contain; display: block; margin: 0 auto 5px; }}
+        .team span {{ font-size: 14px; font-weight: 500; }}
+        .vs-text {{ font-weight: bold; color: #ff3e3e; font-size: 14px; }}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Live Schedule</h1>
-        <p class="update-time">Last Update: {now}</p>
+        <h1>Live Matches</h1>
+        <p class="update-tag">Updated: {now}</p>
         <div id="list">
     """
     
     if not matches:
-        html_template += "<p style='text-align:center;'>No matches found at the moment.</p>"
+        html_template += "<p style='text-align:center;'>No matches found right now.</p>"
     else:
         for m in matches:
+            # We use {{ }} for the JS onerror to avoid Python f-string errors
             html_template += f"""
             <div class="match-card">
-                <div class="time-box">
-                    <span class="league">{m['league']}</span>
-                    <span class="time">{m['time']}</span>
+                <div class="meta-info">
+                    <span class="league-name">{m['league']}</span>
+                    <span>{m['time']}</span>
                 </div>
-                <div class="teams-container">
+                <div class="match-box">
                     <div class="team">
-                        <img src="{m['logo1']}" onerror="this.src='https://via.placeholder.com/45?text=?'}">
+                        <img src="{m['logo1']}" onerror="this.src='https://via.placeholder.com/35?text=?'">
                         <span>{m['team1']}</span>
                     </div>
-                    <div class="vs">VS</div>
+                    <div class="vs-text">VS</div>
                     <div class="team">
-                        <img src="{m['logo2']}" onerror="this.src='https://via.placeholder.com/45?text=?'}">
+                        <img src="{m['logo2']}" onerror="this.src='https://via.placeholder.com/35?text=?'">
                         <span>{m['team2']}</span>
                     </div>
                 </div>
@@ -112,5 +119,5 @@ def generate_html(matches):
         f.write(html_template)
 
 if __name__ == "__main__":
-    data = get_matches()
-    generate_html(data)
+    match_data = get_matches()
+    generate_html(match_data)
