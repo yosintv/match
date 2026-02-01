@@ -1,34 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import datetime
-import base64
-import json
-
-def get_real_stream_url(api_url):
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Referer": "https://www.popozhibo.tv/",
-        "X-Requested-With": "XMLHttpRequest"
-    }
-    try:
-        res = requests.get(api_url, headers=headers, timeout=10)
-        # Debugging output for your GitHub Action Logs
-        print(f"Status for {api_url}: {res.status_code}")
-        
-        data_json = res.json()
-        encoded_data = data_json.get('data', '')
-        if not encoded_data:
-            return None
-        
-        clean_b64 = encoded_data.replace("zh", "")
-        clean_b64 += "=" * ((4 - len(clean_b64) % 4) % 4)
-        decoded_bytes = base64.b64decode(clean_b64)
-        decoded_json = json.loads(decoded_bytes)
-        
-        return decoded_json['links'][0]['url']
-    except Exception as e:
-        print(f"Decode error: {e}")
-        return None
 
 def get_matches():
     url = "https://www.popozhibo.tv/"
@@ -44,33 +16,24 @@ def get_matches():
         items = soup.find_all('li')
 
         for item in items:
-            vs_div = item.find('div', class_='vs')
-            if not vs_div: continue
-
-            # 1. Team Info
-            t1_name = item.find('div', class_='left-team-name')
-            t2_name = item.find('div', class_='right-team-name')
-            if not t1_name or not t2_name: continue
-
-            # 2. Link Logic
-            link_tag = item.find('a', href=True)
-            final_link = "#"
+            if not item.find('div', class_='vs'): continue
             
-            if link_tag:
-                original_path = link_tag['href'].rstrip('/')
-                # Create the API URL
-                api_url = f"https://www.popozhibo.tv{original_path}-url"
-                
-                # Attempt to get direct link
-                decoded_url = get_real_stream_url(api_url)
-                
-                if decoded_url:
-                    final_link = decoded_url
-                else:
-                    # FALLBACK: If decoding fails, just use the original site link
-                    final_link = f"https://www.popozhibo.tv{original_path}"
+            # 1. Extract Info
+            t1_name = item.find('div', class_='left-team-name').get_text(strip=True) if item.find('div', class_='left-team-name') else ""
+            t2_name = item.find('div', class_='right-team-name').get_text(strip=True) if item.find('div', class_='right-team-name') else ""
+            time = item.find('div', class_='game-time').get_text(strip=True) if item.find('div', class_='game-time') else ""
+            league = item.find('div', class_='game-name').get_text(strip=True) if item.find('div', class_='game-name') else ""
 
-            # 3. Logos
+            # 2. Build the exact "play-url" link
+            link_tag = item.find('a', href=True)
+            if link_tag and '/live/' in link_tag['href']:
+                # Example: /live/114276 -> https://www.popozhibo.tv/live/114276/play-url
+                match_id_path = link_tag['href'].rstrip('/')
+                final_json_url = f"https://www.popozhibo.tv{match_id_path}/play-url"
+            else:
+                continue
+
+            # 3. Get Logos
             def fix_img(cls):
                 tag = item.find('img', class_=cls)
                 if not tag or not tag.get('src'): return ""
@@ -78,18 +41,17 @@ def get_matches():
                 return f"https://www.popozhibo.tv{src}" if src.startswith('/') else src
 
             matches.append({
-                "time": item.find('div', class_='game-time').text if item.find('div', class_='game-time') else "",
-                "league": item.find('div', class_='game-name').text if item.find('div', class_='game-name') else "",
-                "team1": t1_name.text.strip(),
-                "team2": t2_name.text.strip(),
+                "time": time,
+                "league": league,
+                "team1": t1_name,
+                "team2": t2_name,
                 "logo1": fix_img('left-team-logo'),
                 "logo2": fix_img('right-team-logo'),
-                "link": final_link
+                "link": final_json_url
             })
-        
         return matches
     except Exception as e:
-        print(f"Main Error: {e}")
+        print(f"Error: {e}")
         return []
 
 def generate_html(matches):
@@ -99,44 +61,45 @@ def generate_html(matches):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
-    <title>Live Streams</title>
+    <title>JSON Link Center</title>
     <style>
-        body {{ font-family: sans-serif; background: #080808; color: #eee; margin: 0; padding: 10px; }}
-        .container {{ max-width: 500px; margin: auto; }}
-        .row {{ background: #121212; border: 1px solid #222; border-radius: 10px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; text-decoration: none; color: inherit; }}
-        .time-box {{ width: 75px; border-right: 1px solid #333; margin-right: 10px; font-size: 11px; }}
-        .league {{ color: #00ff88; font-weight: bold; display: block; }}
-        .game {{ flex: 1; display: flex; justify-content: space-around; align-items: center; text-align: center; }}
-        .team img {{ width: 30px; height: 30px; object-fit: contain; }}
-        .name {{ font-size: 12px; display: block; margin-top: 3px; }}
-        .vs {{ color: #ff4444; font-weight: bold; font-size: 12px; }}
+        body {{ font-family: sans-serif; background: #0a0a0a; color: #fff; padding: 20px; }}
+        .container {{ max-width: 600px; margin: auto; }}
+        .match-card {{ 
+            background: #1a1a1a; border: 1px solid #333; border-radius: 8px; 
+            padding: 15px; margin-bottom: 12px; display: block; 
+            text-decoration: none; color: inherit; transition: 0.2s;
+        }}
+        .match-card:hover {{ border-color: #00ff88; background: #222; }}
+        .meta {{ font-size: 12px; color: #888; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }}
+        .teams {{ display: flex; justify-content: space-between; align-items: center; }}
+        .team {{ text-align: center; width: 40%; }}
+        .team img {{ width: 40px; height: 40px; object-fit: contain; }}
+        .vs {{ font-weight: bold; color: #ff4444; }}
+        .json-label {{ 
+            display: inline-block; background: #00ff88; color: #000; 
+            font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-top: 10px;
+        }}
     </style>
 </head>
 <body>
     <div class="container">
-        <h2 style="text-align:center; color:#00ff88;">Match Center</h2>
-        <p style="text-align:center; font-size:10px; color:#555;">Update: {now}</p>
-        <div id="list">
+        <h2 style="text-align:center;">Today's JSON Stream Links</h2>
+        <p style="text-align:center; font-size:11px; color:#666;">Last Sync: {now}</p>
     """
-    if not matches:
-        html_template += "<p style='text-align:center;'>Fetching matches... check back in 1 minute.</p>"
-    else:
-        for m in matches:
-            html_template += f"""
-            <a href="{m['link']}" class="row" target="_blank">
-                <div class="time-box">
-                    <span class="league">{m['league']}</span>
-                    <span>{m['time']}</span>
-                </div>
-                <div class="game">
-                    <div class="team"><img src="{m['logo1']}"> <span class="name">{m['team1']}</span></div>
-                    <div class="vs">VS</div>
-                    <div class="team"><img src="{m['logo2']}"> <span class="name">{m['team2']}</span></div>
-                </div>
-            </a>"""
+    for m in matches:
+        html_template += f"""
+        <a href="{m['link']}" class="match-card" target="_blank">
+            <div class="meta"><b>{m['league']}</b> | {m['time']}</div>
+            <div class="teams">
+                <div class="team"><img src="{m['logo1']}"><br>{m['team1']}</div>
+                <div class="vs">VS</div>
+                <div class="team"><img src="{m['logo2']}"><br>{m['team2']}</div>
+            </div>
+            <div class="json-label">CLICK FOR RAW JSON</div>
+        </a>"""
     
-    html_template += "</div></div></body></html>"
+    html_template += "</div></body></html>"
     with open("today.html", "w", encoding="utf-8") as f:
         f.write(html_template)
 
