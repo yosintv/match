@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting...</title>
+    <meta charset="UTF-8">
+</head>
+<body style="background: #000; color: #fff; font-family: sans-serif; text-align: center; padding-top: 50px;">
+    <h3>Fetching Stream Link...</h3>
+    <p id="status">Decoding data...</p>
+
+    <script>
+        async function convertAndRedirect() {
+            const params = new URLSearchParams(window.location.search);
+            const target = params.get('target');
+
+            if (!target) {
+                document.getElementById('status').innerText = "No target URL found.";
+                return;
+            }
+
+            try {
+                // Fetch the JSON data from the -url endpoint
+                const response = await fetch(target);
+                const json = await response.json();
+                
+                // The data you showed is Base64. We need to decode it.
+                // We remove "zh" from the end if it exists.
+                let base64Data = json.data.replace("zh", "");
+                let decodedText = atob(base64Data);
+                
+                // Parse the decoded string as JSON
+                let decodedJson = JSON.parse(decodedText);
+                
+                // Extract the first video URL from the "links" array
+                let finalUrl = decodedJson.links[0].url;
+
+                document.getElementById('status').innerText = "Redirecting to stream...";
+                
+                // Redirect to the plain URL
+                window.location.href = finalUrl;
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('status').innerText = "Error converting link. The stream might be offline.";
+            }
+        }
+
+        convertAndRedirect();
+    </script>
+</body>
+</html>
