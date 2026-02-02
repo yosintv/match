@@ -1,56 +1,55 @@
 import asyncio
 import json
 import os
-import re
 from curl_cffi.requests import AsyncSession
 from bs4 import BeautifulSoup
 
-# The URL you provided
 TARGET_URL = "https://crex.com/schedule"
 
 async def fetch_crex_schedule():
     async with AsyncSession() as session:
         print(f"Connecting to CREX...")
         
-        # Impersonate Chrome to avoid getting the '[]' empty response
+        # We MUST use impersonate to avoid the 0 matches/blank screen issue
         res = await session.get(TARGET_URL, impersonate="chrome120", timeout=20)
         
         if res.status_code != 200:
-            print(f"Failed to load page. Status: {res.status_code}")
+            print(f"Failed! Status Code: {res.status_code}")
             return
 
         soup = BeautifulSoup(res.text, 'html.parser')
-        matches = []
-
-        # CREX often stores data in a JSON script tag or specific HTML classes
-        # Logic: Find all match containers (using standard CREX classes)
-        # These classes change often, so we look for common match wrappers
-        cards = soup.select('.schedule-item, .match-card, .sch-item') 
-
-        for card in cards:
-            try:
-                # Based on your example: "Rajasthan Lions", "6:00 PM", "World Legends T20"
-                match_name = card.select_one('.team-name, .match-info').text.strip()
-                match_time = card.select_one('.match-time, .time').text.strip()
-                series_info = card.select_one('.match-desc, .series').text.strip()
-
-                matches.append({
-                    "match_name": match_name,
-                    "time": match_time,
-                    "series": series_info
-                })
-            except Exception:
-                continue
-
-        # FALLBACK: If HTML scraping fails, look for the internal JSON state
-        if not matches:
-            script_tag = soup.find("script", string=re.compile("window.__INITIAL_STATE__"))
-            if script_tag:
-                # This part extracts data if CREX uses a Javascript framework like Nuxt/Next
-                print("Found internal state, parsing JSON...")
-                # Add complex JSON parsing here if needed
         
-        # Save to JSON file
+        # CREX (Next.js) stores data in a script tag with id "__NEXT_DATA__"
+        next_data_script = soup.find("script", id="__NEXT_DATA__")
+        
+        if not next_data_script:
+            print("Could not find data script. The site layout might have changed.")
+            return
+
+        # Load the JSON from the script tag
+        data = json.loads(next_data_script.string)
+        
+        # Navigate through the JSON structure to find the match list
+        # Based on CREX 2026 structure:
+        try:
+            # Note: The path below is the standard for Next.js apps like CREX
+            match_list_raw = data['props']['pageProps']['initialState']['schedule']['scheduleList']
+        except KeyError:
+            print("Data structure updated. Manual check required.")
+            return
+
+        matches = []
+        for item in match_list_raw:
+            # We filter for only the actual matches (some items might be dates/headers)
+            if 'matchName' in item or 'team1Name' in item:
+                matches.append({
+                    "match_name": f"{item.get('team1Name', 'TBA')} vs {item.get('team2Name', 'TBA')}",
+                    "time": item.get('startTime'), # This is usually a UTC timestamp
+                    "series": item.get('seriesName', 'Unknown Series'),
+                    "venue": item.get('venue', 'TBA')
+                })
+
+        # Save to file
         with open("matches.json", "w", encoding="utf-8") as f:
             json.dump(matches, f, indent=4)
             
