@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang="en" data-theme="light" platform="web"><head>
+  <meta charset="utf-8">
+  <!-- <script>
+    (function () {
+      const cookie = document.cookie.split('; ').find(row => row.startsWith('system-theme='));
+      const cookieTheme = cookie ? cookie.split('=')[1] : null;
+    
+      if (cookieTheme) {
+        document.documentElement.setAttribute('data-theme', cookieTheme);
+      }
+    })();
+    </script> -->
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="CREX">
+  <link rel="shortcut icon" href="/assets/icon/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="/assets/icon/favicon.ico" sizes="192x192">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/favicon.ico">
+  
+  <link crossorigin="anonymous" rel="preconnect" href="https://oc.crickapi.com"> 
+  <link crossorigin="anonymous" rel="preconnect" href="https://news.crickapi.com">
+  <link crossorigin="anonymous" rel="preconnect" href="https://crickapi.com">
+  <link crossorigin="anonymous" rel="preconnect" href="https://cricketvectors.akamaized.net">
+  
+  <meta name="theme-color" content="#1A2938">
+  <meta name="supported-color-schemes" content="light dark">
+  <meta http-equiv="Content-Security-Policy">
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="preload" href="crex-web-styles.css" as="style" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="crex-web-styles.css"></noscript>
+  <link rel="preload" href="crex-web-bootstrap-css-module.css" as="style" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="crex-web-bootstrap-css-module.css"></noscript>
+  <link rel="preload" href="/styles/font-family-crex.css" as="style" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/styles/font-family-crex.css"></noscript>
+  <meta name="robots" content="index, follow, max-image-preview:large">
+   <!-- Facebook Pixel Code -->
+  <script async="">
+      function loadFacebookPixel() {
+        if (window.fbq) return;
+            !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '981772646548680');
+            fbq('track', 'PageView');
+            fbq('track', 'ViewContent');
+      }
+      document.addEventListener("scroll", loadFacebookPixel, { once: true });
+  </script> 
+  <noscript>
+    <img height="1" width="1" style="display:none" 
+        src="https://www.facebook.com/tr?id=981772646548680&ev=PageView&noscript=1" alt="Facebook Pixel"/>
+  </noscript>
+  <!-- End Facebook Pixel Code -->
+  <script src="/assets/js/lazysizes.min.js" defer=""></script>
+  <script>
+    if (window.innerWidth >= 1024) {
+      // Load Swiper CSS
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css';
+      link.id = 'swiperCss'
+      document.head.appendChild(link);
+  
+      // Load Swiper JS
+      var script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js';
+      script.defer = true;
+      script.id = 'swiperJs'
+      document.head.appendChild(script);
+    }
+  </script>
+<link rel="stylesheet" href="crex-web-styles.css"><link rel="stylesheet" href="crex-web-bootstrap-css-module.css"><style ng-transition="app-root">.arrow-btn-wrap[_ngcontent-sc21]{cursor:pointer}.arrow-btn-wrap[_ngcontent-sc21], .arrow-btn-wrap[_ngcontent-sc21]   a[_ngcontent-sc21], .arrow-circle[_ngcontent-sc21]{display:flex;align-items:center}.arrow-circle[_ngcontent-sc21]{cursor:pointer;width:2rem;height:2rem;padding:0 10px;color:#000;font-weight:500;border-radius:50%;-moz-user-select:none;user-select:none;-webkit-user-select:none;background:#fff;font-size:19px;margin:0 12px;border:1.25px solid #d9d9d9;justify-content:center}.arrow-circle.disabled[_ngcontent-sc21]{opacity:.5;cursor:auto}.lines[_ngcontent-sc21]{height:1.875rem;width:2px;background:var(--black);margin-right:2px;margin-top:5px}.lines.line-1[_ngcontent-sc21]{width:6px;margin-right:4px;background:#d44143;width:4px;margin-right:2px}.section-btn[_ngcontent-sc21]{width:100%}.section-btn[_ngcontent-sc21]   button[_ngcontent-sc21]{width:100%;margin-top:2.28571429rem;margin-bottom:2.85714286rem!important;font-size:1rem}.section-btn[_ngcontent-sc21]   button[_ngcontent-sc21]   a[_ngcontent-sc21]{display:flex;justify-content:center;align-items:center;gap:10px;font-family:Maison Demi}.social-link[_ngcontent-sc21]
