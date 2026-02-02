@@ -25,11 +25,9 @@ jobs:
       - name: Run Scraper
         run: python crex.py
 
-      - name: Commit and Push
+      - name: Save and Commit
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add matches.json
-          # Add debug.html to git only if you want to see what went wrong
-          # git add debug.html 
+          git add matches.json source_debug.txt || true
           git diff --quiet && git diff --staged --quiet || (git commit -m "Update matches" && git push)
