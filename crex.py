@@ -1,48 +1,60 @@
-import requests
-from bs4 import BeautifulSoup
+import asyncio
 import json
+import os
+import re
+from curl_cffi.requests import AsyncSession
+from bs4 import BeautifulSoup
 
-def fetch_crex_schedule():
-    url = "https://crex.com/schedule"
-    # Headers are necessary to avoid being blocked
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    }
+# The URL you provided
+TARGET_URL = "https://crex.com/schedule"
 
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status() # Check if the request was successful
+async def fetch_crex_schedule():
+    async with AsyncSession() as session:
+        print(f"Connecting to CREX...")
         
-        soup = BeautifulSoup(response.text, 'html.parser')
-        match_list = []
+        # Impersonate Chrome to avoid getting the '[]' empty response
+        res = await session.get(TARGET_URL, impersonate="chrome120", timeout=20)
+        
+        if res.status_code != 200:
+            print(f"Failed to load page. Status: {res.status_code}")
+            return
 
-        # CREX usually wraps matches in 'schedule-card' or similar containers
-        # Note: You may need to update these class names if the website updates its layout
-        schedule_cards = soup.find_all('div', class_='schedule-card')
+        soup = BeautifulSoup(res.text, 'html.parser')
+        matches = []
 
-        for card in schedule_cards:
-            # Extracting match details based on your requirements
+        # CREX often stores data in a JSON script tag or specific HTML classes
+        # Logic: Find all match containers (using standard CREX classes)
+        # These classes change often, so we look for common match wrappers
+        cards = soup.select('.schedule-item, .match-card, .sch-item') 
+
+        for card in cards:
             try:
-                teams = card.find('div', class_='team-info').text.strip()
-                time = card.find('div', class_='match-time').text.strip()
-                series = card.find('div', class_='series-name').text.strip()
-                
-                match_list.append({
-                    "match_name": teams,
-                    "time": time,
-                    "series_info": series
+                # Based on your example: "Rajasthan Lions", "6:00 PM", "World Legends T20"
+                match_name = card.select_one('.team-name, .match-info').text.strip()
+                match_time = card.select_one('.match-time, .time').text.strip()
+                series_info = card.select_one('.match-desc, .series').text.strip()
+
+                matches.append({
+                    "match_name": match_name,
+                    "time": match_time,
+                    "series": series_info
                 })
-            except AttributeError:
-                continue # Skip cards that don't match the expected format
+            except Exception:
+                continue
 
-        # Save the data to a JSON file for your website to use
-        with open('matches.json', 'w') as f:
-            json.dump(match_list, f, indent=4)
+        # FALLBACK: If HTML scraping fails, look for the internal JSON state
+        if not matches:
+            script_tag = soup.find("script", string=re.compile("window.__INITIAL_STATE__"))
+            if script_tag:
+                # This part extracts data if CREX uses a Javascript framework like Nuxt/Next
+                print("Found internal state, parsing JSON...")
+                # Add complex JSON parsing here if needed
+        
+        # Save to JSON file
+        with open("matches.json", "w", encoding="utf-8") as f:
+            json.dump(matches, f, indent=4)
             
-        print(f"Successfully fetched {len(match_list)} matches.")
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Done! Found {len(matches)} matches.")
 
 if __name__ == "__main__":
-    fetch_crex_schedule()
+    asyncio.run(fetch_crex_schedule())
