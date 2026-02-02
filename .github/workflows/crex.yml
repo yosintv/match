@@ -1,18 +1,19 @@
-name: Update CREX Data
+name: Update CREX Schedule
 
 on:
   schedule:
-    - cron: '0 */3 * * *' # Every 3 hours
-  workflow_dispatch:
+    # This runs the scraper every 3 hours automatically
+    - cron: '0 */3 * * *'
+  workflow_dispatch: # This allows you to run it manually from the "Actions" tab
 
 jobs:
-  scrape-task:
+  scrape-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write # Crucial: Allows the bot to save matches.json to your repo
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -22,15 +23,26 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          python -m pip install --upgrade pip
+          # curl_cffi is needed for browser impersonation (prevents 0 matches)
+          # beautifulsoup4 is used to parse the HTML/JSON data
           pip install curl_cffi beautifulsoup4
 
-      - name: Run Scraper
+      - name: Run CREX Scraper
         run: python crex.py
 
-      - name: Commit and Push
+      - name: Commit and Push Data
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Stage the updated JSON file
           git add matches.json
-          # Prevents error if no changes were found
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update matches" && git push)
+          
+          # Only commit if the file actually changed to prevent workflow errors
+          if git diff --staged --quiet; then
+            echo "No changes detected in match data."
+          else
+            git commit -m "Automated update: Cricket Matches $(date)"
+            git push
+          fi
