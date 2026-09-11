@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" data-theme="light" platform="web" premium="false"><head>
+<!DOCTYPE html><html lang="en" data-theme="light" data-lang="en" platform="web" premium="false"><head>
   <meta charset="utf-8">
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
@@ -90,4 +90,4 @@
       document.head.appendChild(script);
     }
   </script> -->
-<link rel="stylesheet" href="crex-web-styles.css"><link rel="stylesheet" href="crex-web-bootstrap-css-module.css"><style ng-transition="app-root">.arrow-btn-wrap[_ngcontent-sc24]{cursor:pointer}.arrow-btn-wrap[_ngcontent-sc24], .arrow-btn-wrap[_ngcontent-sc24]   a[_ngcontent-sc24], .arrow-circle[_ngcontent-sc24]{display:flex;align-items:center}.arrow-circle[_ngcontent-sc24]{cursor:pointer;width:2rem;height:2rem;padding:0 10px;color:#000;f
+<link rel="stylesheet" href="crex-web-styles.css"><link rel="stylesheet" href="crex-web-bootstrap-css-module.css"><style ng-transition="app-root">.arrow-btn-wrap[_ngcontent-sc24]{cursor:pointer}.arrow-btn-wrap[_ngcontent-sc24], .arrow-btn-wrap[_ngcontent-sc24]   a[_ngcontent-sc24], .arrow-circle[_ngcontent-sc24]{display:flex;align-items:center}.arrow-circle[_ngcontent-sc24]{cursor:pointer;width:2rem;height:2rem;padding:0 10
