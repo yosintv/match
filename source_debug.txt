@@ -11,6 +11,7 @@
   <link crossorigin="anonymous" rel="preconnect" href="https://news.crickapi.com">
   <link crossorigin="anonymous" rel="preconnect" href="https://crickapi.com">
   <link crossorigin="anonymous" rel="preconnect" href="https://cricketvectors.akamaized.net">
+  <link rel="preconnect" href="https://onecricketnews.akamaized.net">
   
   <meta name="theme-color" content="#1A2938">
   <meta name="supported-color-schemes" content="light dark">
@@ -22,7 +23,23 @@
   <noscript><link rel="stylesheet" href="crex-web-styles.css"></noscript>
   <link rel="preload" href="crex-web-bootstrap-css-module.css" as="style" onload="this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="crex-web-bootstrap-css-module.css"></noscript>
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" as="style" onload="this.rel='stylesheet'">
+  <script>
+    (function () {
+      var platform = (document.documentElement.getAttribute('platform') || 'web').toLowerCase();
+      if (platform !== 'web') return;
+      [
+        'https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css'
+        
+      ].forEach(function (href) {
+        var link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'style';
+        link.href = href;
+        link.onload = function () { this.rel = 'stylesheet'; };
+        document.head.appendChild(link);
+      });
+    })();
+  </script>
   <link rel="preload" href="/styles/font-family-crex.css" as="style" onload="this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/styles/font-family-crex.css"></noscript>
   <meta name="robots" content="index, follow, max-image-preview:large">
@@ -33,6 +50,8 @@
   <script>
     (function () {
       var loaded = false;
+      var platform = (document.documentElement.getAttribute('platform') || 'web').toLowerCase();
+      if (platform !== 'web') return;
       function loadFacebookPixel() {
         if (loaded) return;
         loaded = true;
@@ -80,15 +99,4 @@
       var link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = 'https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css';
-      link.id = 'swiperCss'
-      document.head.appendChild(link);
-  
-      // Load Swiper JS
-      var script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js';
-      script.defer = true;
-      script.id = 'swiperJs'
-      document.head.appendChild(script);
-    }
-  </script> -->
-<link rel="stylesheet" href="crex-web-styles.css"><link rel="stylesheet" href="crex-web-bootstrap-css-module.css"><style ng-transition="app-root">.arrow-btn-wrap[_ngcontent-sc24]{cursor:pointer}.arrow-btn-wrap[_ngcontent-sc24], .arrow-btn-wrap[_ngcontent-sc24]   a[_ngcontent-sc24], .arrow-circle[
+      link.i
