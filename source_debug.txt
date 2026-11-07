@@ -19,10 +19,10 @@
   <meta http-equiv="Cache-Control" content="no-cache">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <link rel="preload" href="crex-web-styles.css" as="style" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="crex-web-styles.css"></noscript>
-  <link rel="preload" href="crex-web-bootstrap-css-module.css" as="style" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="crex-web-bootstrap-css-module.css"></noscript>
+  <link rel="preload" href="crex-web-styles.09292c3fbacedfb769d2.css" as="style" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="crex-web-styles.09292c3fbacedfb769d2.css"></noscript>
+  <link rel="preload" href="crex-web-bootstrap-css-module.777d16aca80e9c22d8d0.css" as="style" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="crex-web-bootstrap-css-module.777d16aca80e9c22d8d0.css"></noscript>
   <script>
     (function () {
       var platform = (document.documentElement.getAttribute('platform') || 'web').toLowerCase();
@@ -98,5 +98,4 @@
       // Load Swiper CSS
       var link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = 'https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css';
-      link.i
+      l
